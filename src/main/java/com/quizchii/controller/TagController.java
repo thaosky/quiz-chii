@@ -11,10 +11,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/tags")
+@RequestMapping("api/tags")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @AllArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class TagController {
 
     private TagService tagService;
@@ -31,6 +30,7 @@ public class TagController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createTag(@RequestBody TagEntity tag) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -38,17 +38,21 @@ public class TagController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateTag(@RequestBody TagEntity tagEntity, @PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
                         .success(tagService.update(tagEntity, id)));
     }
+
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteTag(@PathVariable Long id) {
         tagService.delete(id);
         return new ResponseEntity<>(new ResponseData<>()
                 .success("Delete successfully!"), HttpStatus.NO_CONTENT);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getTagById(@PathVariable Long id) {
         return ResponseEntity.ok().body(

@@ -1,4 +1,4 @@
-package com.quizchii.model;
+package com.quizchii.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

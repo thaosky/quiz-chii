@@ -3,7 +3,7 @@ package com.quizchii.service;
 
 import com.quizchii.Enum.SortDir;
 import com.quizchii.entity.*;
-import com.quizchii.model.BusinessException;
+import com.quizchii.common.BusinessException;
 import com.quizchii.model.ListResponse;
 import com.quizchii.model.question.TestDTO;
 import com.quizchii.model.Const;

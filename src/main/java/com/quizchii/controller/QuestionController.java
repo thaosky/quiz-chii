@@ -13,10 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/questions")
+@RequestMapping("api/questions")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @AllArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class QuestionController {
     private QuestionService questionService;
 
@@ -33,6 +32,7 @@ public class QuestionController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> create(@RequestBody QuestionRequest request) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -40,6 +40,7 @@ public class QuestionController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> create(@RequestBody QuestionRequest request, @PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -55,6 +56,7 @@ public class QuestionController {
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         ResponseData responseData = new ResponseData();
         questionService.delete(id);
@@ -64,12 +66,14 @@ public class QuestionController {
     }
 
     @PostMapping("/{id}/add-tag")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addTag(@PathVariable Long id, @RequestBody List<TagEntity> tagList) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
                         .success(questionService.addTagByQuestion(id, tagList)));
     }
     @DeleteMapping("/{id}/delete-tag/{tagId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteTagByQuestion(@PathVariable Long id, @PathVariable Long tagId) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()

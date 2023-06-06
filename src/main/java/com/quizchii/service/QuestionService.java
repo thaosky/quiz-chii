@@ -4,7 +4,7 @@ import com.quizchii.Enum.SortDir;
 import com.quizchii.entity.QuestionEntity;
 import com.quizchii.entity.QuestionTagEntity;
 import com.quizchii.entity.TagEntity;
-import com.quizchii.model.BusinessException;
+import com.quizchii.common.BusinessException;
 import com.quizchii.model.ListResponse;
 import com.quizchii.model.QuestionRequest;
 import com.quizchii.model.QuestionResponse;

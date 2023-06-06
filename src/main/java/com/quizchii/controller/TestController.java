@@ -7,9 +7,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/tests")
+@RequestMapping("api/tests")
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @AllArgsConstructor
@@ -37,6 +38,7 @@ public class TestController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         ResponseData responseData = new ResponseData();
         testService.delete(id);
@@ -44,6 +46,7 @@ public class TestController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createTest(@RequestBody TestDTO testDTO) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -52,6 +55,7 @@ public class TestController {
 
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateTest(@RequestBody TestDTO testDTO, @PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
