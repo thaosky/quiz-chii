@@ -3,7 +3,7 @@ package com.quizchii.service;
 import com.quizchii.Enum.SortDir;
 import com.quizchii.entity.UserEntity;
 import com.quizchii.common.BusinessException;
-import com.quizchii.model.Const;
+import com.quizchii.common.StatusCode;
 import com.quizchii.model.ListResponse;
 import com.quizchii.model.request.UpdateUserRequest;
 import com.quizchii.model.response.UserResponse;
@@ -64,7 +64,7 @@ public class UserService {
 
     public void updateUserById(Long id, UpdateUserRequest request) {
         Optional<UserEntity> optional = userRepository.findById(id);
-        UserEntity userEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, Const.USER_NOT_EXIST));
+        UserEntity userEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, StatusCode.USER_NOT_EXIST));
 
         userEntity.setEmail(request.getEmail());
         userEntity.setName(request.getName());
@@ -75,7 +75,7 @@ public class UserService {
 
     public UserResponse getUserById(Long id) {
         Optional<UserEntity> optional = userRepository.findById(id);
-        UserEntity userEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, Const.USER_NOT_EXIST));
+        UserEntity userEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, StatusCode.USER_NOT_EXIST));
 
         UserResponse response = new UserResponse();
         BeanUtils.copyProperties(userEntity, response);

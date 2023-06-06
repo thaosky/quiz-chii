@@ -6,7 +6,7 @@ import com.quizchii.entity.*;
 import com.quizchii.common.BusinessException;
 import com.quizchii.model.ListResponse;
 import com.quizchii.model.question.TestDTO;
-import com.quizchii.model.Const;
+import com.quizchii.common.StatusCode;
 import com.quizchii.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -150,7 +150,7 @@ public class TestService {
 
     public void delete(Long id) {
         Optional<TestEntity> optional = testRepository.findById(id);
-        TestEntity testEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, Const.TAG_NOT_FOUND));
+        TestEntity testEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, StatusCode.TAG_NOT_FOUND));
         testRepository.delete(testEntity);
 
         // xoa tag

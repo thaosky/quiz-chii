@@ -1,14 +1,11 @@
 package com.quizchii.common;
 
-import com.quizchii.common.BusinessException;
-import com.quizchii.model.Const;
 import com.quizchii.model.ResponseData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.nio.file.AccessDeniedException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -19,6 +16,14 @@ public class GlobalExceptionHandler {
         ResponseData responseData = new ResponseData();
         responseData.error(e.getMessage());
         return ResponseEntity.status(e.getStatusCode()).body(responseData);
+    }
+
+    @ExceptionHandler({BadCredentialsException.class})
+    public ResponseEntity<ResponseData> handleException(BadCredentialsException e) {
+        e.printStackTrace();
+        ResponseData responseData = new ResponseData();
+        responseData.error(StatusCode.WRONG_PASSWORD);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
     }
 
     @ExceptionHandler
