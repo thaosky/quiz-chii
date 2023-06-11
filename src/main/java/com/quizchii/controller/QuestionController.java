@@ -1,7 +1,7 @@
 package com.quizchii.controller;
 
 import com.quizchii.entity.TagEntity;
-import com.quizchii.model.QuestionRequest;
+import com.quizchii.model.request.QuestionRequest;
 import com.quizchii.model.ResponseData;
 import com.quizchii.service.QuestionService;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.quizchii.model;
+package com.quizchii.model.request;
 
 import com.quizchii.entity.TagEntity;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuestionResponse {
+public class QuestionRequest {
     private Long id;
     private String content;
     private String answer1;

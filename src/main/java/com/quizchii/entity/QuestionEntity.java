@@ -28,5 +28,5 @@ public class QuestionEntity {
     @Column(name = "answer_4")
     private String answer4;
 
-    private String correctAnswer;
+    private Integer correctAnswer;
 }
