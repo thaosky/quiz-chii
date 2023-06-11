@@ -1,4 +1,4 @@
-package com.quizchii.model.question;
+package com.quizchii.model.response;
 
 
 import com.quizchii.entity.QuestionEntity;
@@ -14,13 +14,13 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TestDTO {
+public class TestResponse {
     private Long id;
 
     private String name;
     private String description;
     private Integer availableTime;
 
-    private List<QuestionEntity> questionList;
+    private List<QuestionEntity> questionList; // Trả về cho user thì field câu trả lời đúng phải set null
     private List<TagEntity> tagList;
 }

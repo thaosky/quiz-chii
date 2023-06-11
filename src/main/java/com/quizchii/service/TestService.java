@@ -5,9 +5,10 @@ import com.quizchii.Enum.SortDir;
 import com.quizchii.entity.*;
 import com.quizchii.common.BusinessException;
 import com.quizchii.model.ListResponse;
-import com.quizchii.model.question.TestDTO;
+import com.quizchii.model.response.TestResponse;
 import com.quizchii.common.StatusCode;
 import com.quizchii.repository.*;
+import com.quizchii.security.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -29,8 +30,9 @@ public class TestService {
     private TestQuestionRepository testQuestionRepository;
     private TestTagRepository testTagRepository;
     private QuestionRepository questionRepository;
+    private AuthService authService;
 
-    public ListResponse<TestDTO> getAllTest(Integer pageSize, Integer pageNo, String sortName, String sortDir, String name, Long tagId) {
+    public ListResponse<TestResponse> getAllTest(Integer pageSize, Integer pageNo, String sortName, String sortDir, String name, Long tagId) {
         // Paging & sorting
         if ("".equals(name)) {
             name = null;
@@ -44,17 +46,17 @@ public class TestService {
         Pageable pageable = PageRequest.of(pageNo, pageSize, sortable);
         Page<TestEntity> page = testRepository.listTest(name, tagId, pageable);
 
-        ListResponse<TestDTO> response = new ListResponse();
+        ListResponse<TestResponse> response = new ListResponse();
         List<TestEntity> entities = page.toList();
-        List<TestDTO> testDTOList = new ArrayList<>();
+        List<TestResponse> testResponseList = new ArrayList<>();
         for (TestEntity entity : entities) {
-            TestDTO item = new TestDTO();
+            TestResponse item = new TestResponse();
             BeanUtils.copyProperties(entity, item);
             List<TagEntity> tagEntityList = tagRepository.findAllByTestId(entity.getId());
             item.setTagList(tagEntityList);
-            testDTOList.add(item);
+            testResponseList.add(item);
         }
-        response.setItems(testDTOList);
+        response.setItems(testResponseList);
         response.setPageNo(pageNo);
         response.setPageSize(pageSize);
         response.setTotalElements((int) page.getTotalElements());
@@ -63,32 +65,36 @@ public class TestService {
         return response;
     }
 
-    public TestDTO getById(Long testId) {
-        List<QuestionEntity> questionEntityList = questionRepository.findAllByTestId(testId);
-        List<QuestionEntity> done = new ArrayList<>();
-        for(QuestionEntity question: questionEntityList) {
+    public TestResponse getById(Long testId) {
+        boolean isAmin = authService.isAdmin();
+        List<QuestionEntity> questionListForAdmin = questionRepository.findAllByTestId(testId);
+        List<QuestionEntity> questionListForUser = new ArrayList<>();
+        for(QuestionEntity question: questionListForAdmin) {
             QuestionEntity doneItem = new QuestionEntity();
             BeanUtils.copyProperties(question, doneItem, "correctAnswer");
-            done.add(doneItem);
+            questionListForUser.add(doneItem);
         }
         List<TagEntity> tagEntityList = tagRepository.findAllByTestId(testId);
 
-
-
         TestEntity testEntity = testRepository.findById(testId).get();
-        TestDTO dto = new TestDTO();
+        TestResponse dto = new TestResponse();
         BeanUtils.copyProperties(testEntity, dto);
-        dto.setQuestionList(done);
+        if (isAmin) {
+            dto.setQuestionList(questionListForAdmin);
+        } else {
+            dto.setQuestionList(questionListForUser);
+        }
+
         dto.setTagList(tagEntityList);
         return dto;
     }
 
-    public TestDTO create(TestDTO testDTO) {
-        List<QuestionEntity> questionEntityList = testDTO.getQuestionList();
-        List<TagEntity> tagEntityList = testDTO.getTagList();
+    public TestResponse create(TestResponse testResponse) {
+        List<QuestionEntity> questionEntityList = testResponse.getQuestionList();
+        List<TagEntity> tagEntityList = testResponse.getTagList();
 
         TestEntity testEntity = new TestEntity();
-        BeanUtils.copyProperties(testDTO, testEntity);
+        BeanUtils.copyProperties(testResponse, testEntity);
         TestEntity save = testRepository.save(testEntity);
         // save test_question
         for (QuestionEntity questionEntity : questionEntityList) {
@@ -108,11 +114,11 @@ public class TestService {
             testTagRepository.save(testTagEntity);
         }
 
-        testDTO.setId(save.getId());
-        return testDTO;
+        testResponse.setId(save.getId());
+        return testResponse;
     }
 
-    public TestDTO update(TestDTO request, Long id) {
+    public TestResponse update(TestResponse request, Long id) {
         TestEntity testEntity = testRepository.findById(id).get();
         BeanUtils.copyProperties(request, testEntity);
         testRepository.save(testEntity);

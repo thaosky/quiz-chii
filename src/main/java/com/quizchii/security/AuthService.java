@@ -199,4 +199,20 @@ public class AuthService {
         responseData.setData(StatusCode.CHANGE_PASSWORD_SUCCESS);
         return responseData;
     }
+
+    public boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = authentication
+                .getAuthorities()
+                .stream()
+                .map(item -> item.getAuthority()).collect(Collectors.toList());
+
+        for (String role: roles) {
+            if("ROLE_ADMIN".equals(role)) {
+               return true;
+            }
+        }
+        return false;
+
+    }
 }
