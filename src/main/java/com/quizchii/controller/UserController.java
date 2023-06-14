@@ -2,6 +2,7 @@ package com.quizchii.controller;
 
 import com.quizchii.model.ResponseData;
 import com.quizchii.model.request.RegisterRequest;
+import com.quizchii.model.request.UpdateUserRequest;
 import com.quizchii.security.AuthService;
 import com.quizchii.service.UserService;
 import lombok.AllArgsConstructor;
@@ -16,12 +17,12 @@ import javax.validation.Valid;
 @RequestMapping("api/users")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @AllArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class UserController {
     private final UserService userService;
     private final AuthService authService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAll(@Param("pageSize") Integer pageSize,
                                     @Param("pageNo") Integer pageNo,
                                     @Param("sortName") String sortName,
@@ -34,15 +35,15 @@ public class UserController {
     }
 
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> updateUserById(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
-//        ResponseData responseData = new ResponseData();
-//        userService.updateUserById(id, request);
-//        return new ResponseEntity<>(responseData, HttpStatus.NO_CONTENT);
-//    }
-
-
+    // Update thông tin user
     @PutMapping("/{id}")
+    public ResponseEntity<?> updateUserById(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
+        return ResponseEntity.ok(userService.updateUserById(id, request));
+    }
+
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()

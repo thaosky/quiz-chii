@@ -176,8 +176,8 @@ public class AuthService {
         UserEntity userEntityChangePass = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, StatusCode.USER_NOT_EXIST));
         String passwordEncoder = encoder.encode(password);
         boolean isAdmin = false;
-        for (String role: roles) {
-            if("ROLE_ADMIN".equals(role)) {
+        for (String role : roles) {
+            if ("ROLE_ADMIN".equals(role)) {
                 userEntityChangePass.setPassword(passwordEncoder);
                 userRepository.save(userEntityChangePass);
                 isAdmin = true;
@@ -186,7 +186,7 @@ public class AuthService {
         }
 
         if (!isAdmin) {
-            if(login.equals(userEntityChangePass.getUsername())) {
+            if (login.equals(userEntityChangePass.getUsername())) {
                 // đổi pass
                 userEntityChangePass.setPassword(passwordEncoder);
                 userRepository.save(userEntityChangePass);
@@ -207,12 +207,33 @@ public class AuthService {
                 .stream()
                 .map(item -> item.getAuthority()).collect(Collectors.toList());
 
-        for (String role: roles) {
-            if("ROLE_ADMIN".equals(role)) {
-               return true;
+        for (String role : roles) {
+            if ("ROLE_ADMIN".equals(role)) {
+                return true;
             }
         }
         return false;
+    }
 
+    /**
+     * @param id user bi tac dong
+     * @return
+     */
+    public boolean havePermission(Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        List<String> roles = authentication
+                .getAuthorities()
+                .stream()
+                .map(item -> item.getAuthority()).collect(Collectors.toList());
+
+        for (String role : roles) {
+            if ("ROLE_ADMIN".equals(role)) {
+                return true;
+            }
+        }
+        Optional<UserEntity> optional = userRepository.findById(id);
+        UserEntity userEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, StatusCode.USER_NOT_EXIST));
+        return userEntity.getUsername().equals(login);
     }
 }
