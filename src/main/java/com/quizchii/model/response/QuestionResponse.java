@@ -15,6 +15,7 @@ import java.util.List;
 public class QuestionResponse {
     private Long id;
     private String content;
+    private String question;
     private String answer1;
     private String answer2;
     private String answer3;

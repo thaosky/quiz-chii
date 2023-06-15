@@ -52,6 +52,7 @@ public class ResultService {
             }
             ResultDetailEntity resultDetailEntity = new ResultDetailEntity();
 
+            resultDetailEntity.setQuestion(questionList.get(i).getQuestion());
             resultDetailEntity.setContent(questionList.get(i).getContent());
             resultDetailEntity.setAnswer1(questionList.get(i).getAnswer1());
             resultDetailEntity.setAnswer2(questionList.get(i).getAnswer2());

@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class QuestionRequest {
     private Long id;
+    private String question;
     private String content;
     private String answer1;
     private String answer2;
