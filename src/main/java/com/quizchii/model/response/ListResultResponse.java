@@ -5,17 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
 import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResultResponse {
+public class ListResultResponse {
     private Long userId;
     private String username;
-    private Date startedAt;
-    private Date submitAt;
-    private Integer corrected; // Số câu tl đúng
-    List<ResultDetailResponse> resultDetails; // Danh sách câu hỏi, đáp án, phương án đã chọn
+    List<ListResultItemResponse> list;
 }

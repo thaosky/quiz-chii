@@ -2,21 +2,18 @@ package com.quizchii.service;
 
 import com.quizchii.common.BusinessException;
 import com.quizchii.common.StatusCode;
-import com.quizchii.entity.QuestionEntity;
-import com.quizchii.entity.ResultDetailEntity;
-import com.quizchii.entity.ResultEntity;
-import com.quizchii.entity.TestEntity;
+import com.quizchii.entity.*;
 import com.quizchii.model.request.ResultDetailRequest;
 import com.quizchii.model.request.ResultRequest;
-import com.quizchii.model.response.ResultDetailResponse;
-import com.quizchii.model.response.ResultResponse;
-import com.quizchii.repository.QuestionRepository;
-import com.quizchii.repository.ResultDetailRepository;
-import com.quizchii.repository.ResultRepository;
-import com.quizchii.repository.TestRepository;
+import com.quizchii.model.response.*;
+import com.quizchii.repository.*;
+import com.quizchii.security.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +28,8 @@ public class ResultService {
     private final ResultDetailRepository resultDetailRepository;
     private final TestRepository testRepository;
     private final QuestionRepository questionRepository;
+    private final AuthService authService;
+    private final UserRepository userRepository;
 
     public ResultResponse submitTest(ResultRequest request) {
 
@@ -68,8 +67,10 @@ public class ResultService {
         // Lưu kết quả thi (Ngày, giờ, điểm)
         ResultEntity resultEntity = new ResultEntity();
         resultEntity.setStartedAt(request.getStartedAt());
+        resultEntity.setTestName(request.getTestName());
         resultEntity.setSubmitAt(request.getSubmitAt());
         resultEntity.setAccountId(request.getUserId());
+        resultEntity.setTestId(request.getTestId());
         resultEntity.setCorrected(point);
         ResultEntity saved = resultRepository.save(resultEntity);
 
@@ -87,8 +88,60 @@ public class ResultService {
         ResultResponse response = new ResultResponse();
         response.setCorrected(point);
         response.setStartedAt(request.getStartedAt());
-        response.setStartedAt(request.getSubmitAt());
+        response.setUserId(request.getUserId());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        response.setUsername(login);
+        response.setSubmitAt(request.getSubmitAt());
         response.setResultDetails(detailResponses);
+        return response;
+    }
+
+    public ListResultResponse listResultByUserId(Long id) {
+        ListResultResponse response = new ListResultResponse();
+
+        if (!authService.havePermission(id)) {
+            throw new BusinessException(HttpStatus.FORBIDDEN, StatusCode.FORBIDDEN);
+        }
+
+        List<ListResultItemResponse> list = new ArrayList<>();
+        List<ResultEntity> resultEntityList = resultRepository.getAllByAccountId(id);
+        for (ResultEntity entity : resultEntityList) {
+            ListResultItemResponse item = new ListResultItemResponse();
+            BeanUtils.copyProperties(entity, item);
+            list.add(item);
+        }
+
+        response.setList(list);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        response.setUsername(login);
+        response.setUserId(id);
+
+        return response;
+    }
+
+    public ListResultByTestIdResponse listResultByTestId(Long id) {
+        ListResultByTestIdResponse response = new ListResultByTestIdResponse();
+
+        List<ListResultItemByTestIdResponse> list = new ArrayList<>();
+        List<ResultEntity> resultEntityList = resultRepository.getAllByTestId(id);
+        for (ResultEntity entity : resultEntityList) {
+            ListResultItemByTestIdResponse item = new ListResultItemByTestIdResponse();
+            BeanUtils.copyProperties(entity, item);
+
+            item.setUserId(entity.getAccountId());
+            UserEntity userEntity = userRepository.getById(entity.getAccountId());
+            item.setUsername(userEntity.getUsername());
+
+            list.add(item);
+        }
+
+        // Get test by id test
+        TestEntity test = testRepository.getById(id);
+
+        response.setList(list);
+        response.setTestName(test.getName());
         return response;
     }
 }
