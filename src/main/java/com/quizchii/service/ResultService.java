@@ -14,7 +14,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -68,10 +67,10 @@ public class ResultService {
 
         // Lưu kết quả thi (Ngày, giờ, điểm)
         ResultEntity resultEntity = new ResultEntity();
-        Timestamp statedAt = Util.convertStringToTimestamp(request.getStartedAt());
+        Timestamp statedAt = Util.convertTimestampToString(request.getStartedAt());
         resultEntity.setStartedAt(statedAt);
         resultEntity.setTestName(request.getTestName());
-        Timestamp submittedAt = Util.convertStringToTimestamp(request.getSubmitAt());
+        Timestamp submittedAt = Util.convertTimestampToString(request.getSubmitAt());
         resultEntity.setSubmitAt(submittedAt);
         resultEntity.setAccountId(request.getUserId());
         resultEntity.setTestId(request.getTestId());
@@ -113,6 +112,8 @@ public class ResultService {
         for (ResultEntity entity : resultEntityList) {
             ListResultItemResponse item = new ListResultItemResponse();
             BeanUtils.copyProperties(entity, item);
+            item.setStartedAt(entity.getStartedAt().toString());
+            item.setSubmitAt(entity.getSubmitAt().toString());
             list.add(item);
         }
 
@@ -133,7 +134,8 @@ public class ResultService {
         for (ResultEntity entity : resultEntityList) {
             ListResultItemByTestIdResponse item = new ListResultItemByTestIdResponse();
             BeanUtils.copyProperties(entity, item);
-            item.setStartedAt();
+            item.setStartedAt(entity.getStartedAt().toString());
+            item.setSubmitAt(entity.getSubmitAt().toString());
 
             item.setUserId(entity.getAccountId());
             UserEntity userEntity = userRepository.getById(entity.getAccountId());
