@@ -11,6 +11,8 @@ import lombok.Setter;
 public class ResultDetailResponse {
     private String content;
 
+    private String question;
+
     private String answer1;
 
     private String answer2;

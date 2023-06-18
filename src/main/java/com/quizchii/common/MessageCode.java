@@ -1,10 +1,11 @@
 package com.quizchii.common;
 
-public  class StatusCode {
+public  class MessageCode {
     public static  final String TAG_NOT_FOUND = "Không tìm thấy tag";
     public static  final String WRONG_PASSWORD = "Sai mật khẩu. Vui lòng thử lại";
     public static  final String FORBIDDEN = "Không có quyền thực hiện chức năng này";
     public static  final String QUESTION_NOT_FOUND = "Không tìm thấy câu hỏi";
+    public static  final String RESULT_NOT_FOUND = "Không tìm thấy lịch sử thi";
     public static  final String TEST_NOT_FOUND = "Không tìm thấy bài test";
     public static  final String USERNAME_ALREADY_EXIST = "Username đã tồn tại";
     public static  final String USER_NOT_EXIST = "User không tồn tại";

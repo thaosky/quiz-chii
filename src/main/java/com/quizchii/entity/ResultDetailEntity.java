@@ -18,7 +18,9 @@ public class ResultDetailEntity {
     private Long id;
 
     private Long resultId;
+
     private String question;
+
     private String content;
 
     @Column(name = "answer_1")

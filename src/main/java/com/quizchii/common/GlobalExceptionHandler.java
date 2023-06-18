@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseData> handleException(BadCredentialsException e) {
         e.printStackTrace();
         ResponseData responseData = new ResponseData();
-        responseData.error(StatusCode.WRONG_PASSWORD);
+        responseData.error(MessageCode.WRONG_PASSWORD);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
     }
 

@@ -13,7 +13,7 @@ import com.quizchii.repository.RoleRepository;
 import com.quizchii.repository.UserRepository;
 import com.quizchii.security.jwt.JwtUtils;
 import com.quizchii.security.services.UserDetailsImpl;
-import com.quizchii.common.StatusCode;
+import com.quizchii.common.MessageCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -60,10 +60,10 @@ public class AuthService {
 
         // Check username, password
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, StatusCode.USERNAME_ALREADY_EXIST);
+            throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.USERNAME_ALREADY_EXIST);
         }
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, StatusCode.EMAIL_ALREADY_EXIST);
+            throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.EMAIL_ALREADY_EXIST);
         }
 
         UserEntity user = new UserEntity(signUpRequest.getUsername(), signUpRequest.getName(),
@@ -73,7 +73,7 @@ public class AuthService {
         // Set role mặc định là USER
         Set<RoleEntity> roles = new HashSet<>();
         RoleEntity userRole = roleRepository.findByName(RoleEnum.ROLE_USER)
-                .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, StatusCode.ROLE_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.ROLE_NOT_FOUND));
         roles.add(userRole);
 
         user.setRoles(roles);
@@ -97,11 +97,11 @@ public class AuthService {
     public UserResponse createUser(RegisterRequest signUpRequest) {
         // Check username, password
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, StatusCode.USERNAME_ALREADY_EXIST);
+            throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.USERNAME_ALREADY_EXIST);
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, StatusCode.EMAIL_ALREADY_EXIST);
+            throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.EMAIL_ALREADY_EXIST);
         }
 
         // Create new user's account
@@ -115,18 +115,18 @@ public class AuthService {
         // Nếu không truyền role, mặc định là user
         if (strRoles == null) {
             RoleEntity userRole = roleRepository.findByName(RoleEnum.ROLE_USER)
-                    .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, StatusCode.ROLE_NOT_FOUND));
+                    .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.ROLE_NOT_FOUND));
             roles.add(userRole);
         } else {
             // Nếu có role, tạo role như mong muốn
             strRoles.forEach(role -> {
                 if ("admin".equals(role)) {
                     RoleEntity adminRole = roleRepository.findByName(RoleEnum.ROLE_ADMIN)
-                            .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, StatusCode.ROLE_NOT_FOUND));
+                            .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.ROLE_NOT_FOUND));
                     roles.add(adminRole);
                 } else {
                     RoleEntity userRole = roleRepository.findByName(RoleEnum.ROLE_USER)
-                            .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, StatusCode.ROLE_NOT_FOUND));
+                            .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.ROLE_NOT_FOUND));
                     roles.add(userRole);
                 }
             });
@@ -154,7 +154,7 @@ public class AuthService {
         String userName = userDetails.getUsername();
         Boolean active = userRepository.existsByUsernameAndActive(userName, 1);
         if (!active) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, StatusCode.USER_NOT_ACTIVE);
+            throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.USER_NOT_ACTIVE);
         }
         List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
 
@@ -173,7 +173,7 @@ public class AuthService {
 
 
         Optional<UserEntity> optional = userRepository.findById(id);
-        UserEntity userEntityChangePass = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, StatusCode.USER_NOT_EXIST));
+        UserEntity userEntityChangePass = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.USER_NOT_EXIST));
         String passwordEncoder = encoder.encode(password);
         boolean isAdmin = false;
         for (String role : roles) {
@@ -191,12 +191,12 @@ public class AuthService {
                 userEntityChangePass.setPassword(passwordEncoder);
                 userRepository.save(userEntityChangePass);
             } else {
-                throw new BusinessException(HttpStatus.FORBIDDEN, StatusCode.FORBIDDEN);
+                throw new BusinessException(HttpStatus.FORBIDDEN, MessageCode.FORBIDDEN);
             }
         }
 
         ResponseData responseData = new ResponseData<>();
-        responseData.setData(StatusCode.CHANGE_PASSWORD_SUCCESS);
+        responseData.setData(MessageCode.CHANGE_PASSWORD_SUCCESS);
         return responseData;
     }
 
@@ -233,7 +233,7 @@ public class AuthService {
             }
         }
         Optional<UserEntity> optional = userRepository.findById(id);
-        UserEntity userEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, StatusCode.USER_NOT_EXIST));
+        UserEntity userEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.USER_NOT_EXIST));
         return userEntity.getUsername().equals(login);
     }
 }

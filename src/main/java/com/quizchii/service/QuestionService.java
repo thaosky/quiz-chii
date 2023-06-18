@@ -1,7 +1,7 @@
 package com.quizchii.service;
 
 import com.quizchii.Enum.SortDir;
-import com.quizchii.common.StatusCode;
+import com.quizchii.common.MessageCode;
 import com.quizchii.entity.QuestionEntity;
 import com.quizchii.entity.QuestionTagEntity;
 import com.quizchii.entity.TagEntity;
@@ -83,7 +83,7 @@ public class QuestionService {
 
     public QuestionResponse getQuestionById(Long questionId) {
         Optional<QuestionEntity> optional = questionRepository.findById(questionId);
-        QuestionEntity questionEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, StatusCode.TAG_NOT_FOUND));
+        QuestionEntity questionEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.TAG_NOT_FOUND));
 
         QuestionResponse response = new QuestionResponse();
         BeanUtils.copyProperties(questionEntity, response);
@@ -113,7 +113,7 @@ public class QuestionService {
 
     public QuestionResponse deleteTagByQuestion(Long questionId, Long tagId) {
         Optional<QuestionTagEntity> optional = questionTagRepository.findByQuestionIdAndTagId(questionId, tagId);
-        QuestionTagEntity questionTagEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, StatusCode.TAG_NOT_FOUND));
+        QuestionTagEntity questionTagEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.TAG_NOT_FOUND));
         questionTagRepository.delete(questionTagEntity);
 
         return getQuestionById(questionId);
@@ -122,7 +122,7 @@ public class QuestionService {
     @Transactional
     public void delete(Long id) {
         Optional<QuestionEntity> optional = questionRepository.findById(id);
-        QuestionEntity questionEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, StatusCode.TAG_NOT_FOUND));
+        QuestionEntity questionEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.TAG_NOT_FOUND));
         questionRepository.delete(questionEntity);
 
         List<QuestionTagEntity> list = questionTagRepository.findAllByQuestionId(id);

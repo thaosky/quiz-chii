@@ -1,7 +1,7 @@
 package com.quizchii.service;
 
 import com.quizchii.common.BusinessException;
-import com.quizchii.common.StatusCode;
+import com.quizchii.common.MessageCode;
 import com.quizchii.common.Util;
 import com.quizchii.entity.*;
 import com.quizchii.model.request.ResultDetailRequest;
@@ -11,6 +11,7 @@ import com.quizchii.repository.*;
 import com.quizchii.security.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,7 +36,7 @@ public class ResultService {
     public ResultResponse submitTest(ResultRequest request) {
 
         Optional<TestEntity> optional = testRepository.findById(request.getTestId());
-        TestEntity test = optional.orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, StatusCode.TEST_NOT_FOUND));
+        TestEntity test = optional.orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.TEST_NOT_FOUND));
 
         List<ResultDetailRequest> resultList = request.getResultDetails();
         List<QuestionEntity> questionList = questionRepository.findAllByTestId(test.getId());
@@ -104,7 +105,7 @@ public class ResultService {
         ListResultResponse response = new ListResultResponse();
 
         if (!authService.havePermission(id)) {
-            throw new BusinessException(HttpStatus.FORBIDDEN, StatusCode.FORBIDDEN);
+            throw new BusinessException(HttpStatus.FORBIDDEN, MessageCode.FORBIDDEN);
         }
 
         List<ListResultItemResponse> list = new ArrayList<>();
@@ -152,7 +153,33 @@ public class ResultService {
         return response;
     }
 
-//    public Object getResultDetail(Long id) {
-//        ResultDetailResponse
-//    }
+    /**
+     * @param id kết quả lần thi
+     * @return
+     */
+    public ResultResponse getResultDetail(Long id) {
+        // Lấy thông tin kết quả lần thi
+        ResultResponse response = new ResultResponse();
+        ResultEntity resultEntity = resultRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.RESULT_NOT_FOUND));
+
+        response.setUserId(resultEntity.getAccountId());
+        response.setUsername(resultEntity.getUsername());
+        response.setStartedAt(resultEntity.getStartedAt().toString());
+        response.setSubmitAt(resultEntity.getSubmitAt().toString());
+        response.setCorrected(resultEntity.getCorrected());
+
+        // Thông tin chi tiết lần thi
+        List<ResultDetailResponse> list = new ArrayList<>();
+        List<ResultDetailEntity> entities = resultDetailRepository.findAllByResultId(id);
+        for(ResultDetailEntity entity: entities) {
+            ResultDetailResponse item = new ResultDetailResponse();
+            BeanUtils.copyProperties(entity, item);
+
+            list.add(item);
+        }
+
+        response.setResultDetails(list);
+        return response;
+    }
 }

@@ -22,6 +22,7 @@ public class ResultEntity {
 
     private Long testId;
     private String testName;
+    private String username;
     private Long accountId;
     private Timestamp startedAt;
     private Timestamp submitAt;
