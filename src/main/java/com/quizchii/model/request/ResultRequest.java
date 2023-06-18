@@ -17,6 +17,6 @@ public class ResultRequest {
     private Long testId; // Để lấy danh sách câu hỏi, đáp án đúng
     private String testName;
     private String startedAt;
-    private String submitAt;
+    private String submittedAt;
     List<ResultDetailRequest> resultDetails; // Danh sách câu trả lời của user
 }

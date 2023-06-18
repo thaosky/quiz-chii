@@ -16,6 +16,6 @@ public class ListResultItemByTestIdResponse {
     private String username;
     private Long userId;
     private String startedAt;
-    private String submitAt;
+    private String submittedAt;
     private Integer corrected;
 }

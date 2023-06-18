@@ -25,6 +25,6 @@ public class ResultEntity {
     private String username;
     private Long accountId;
     private Timestamp startedAt;
-    private Timestamp submitAt;
+    private Timestamp submittedAt;
     private Integer corrected;
 }

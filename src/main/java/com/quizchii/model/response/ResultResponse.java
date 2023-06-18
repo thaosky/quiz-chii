@@ -16,7 +16,7 @@ public class ResultResponse {
     private Long userId;
     private String username;
     private String startedAt;
-    private String submitAt;
+    private String submittedAt;
     private Integer corrected; // Số câu tl đúng
     List<ResultDetailResponse> resultDetails; // Danh sách câu hỏi, đáp án, phương án đã chọn
 }

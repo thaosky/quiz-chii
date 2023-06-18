@@ -71,8 +71,8 @@ public class ResultService {
         Timestamp statedAt = Util.convertTimestampToString(request.getStartedAt());
         resultEntity.setStartedAt(statedAt);
         resultEntity.setTestName(request.getTestName());
-        Timestamp submittedAt = Util.convertTimestampToString(request.getSubmitAt());
-        resultEntity.setSubmitAt(submittedAt);
+        Timestamp submittedAt = Util.convertTimestampToString(request.getSubmittedAt());
+        resultEntity.setSubmittedAt(submittedAt);
         resultEntity.setAccountId(request.getUserId());
         resultEntity.setTestId(request.getTestId());
         resultEntity.setCorrected(point);
@@ -96,7 +96,7 @@ public class ResultService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String login = authentication.getName();
         response.setUsername(login);
-        response.setSubmitAt(request.getSubmitAt());
+        response.setSubmittedAt(request.getSubmittedAt());
         response.setResultDetails(detailResponses);
         return response;
     }
@@ -114,7 +114,7 @@ public class ResultService {
             ListResultItemResponse item = new ListResultItemResponse();
             BeanUtils.copyProperties(entity, item);
             item.setStartedAt(entity.getStartedAt().toString());
-            item.setSubmitAt(entity.getSubmitAt().toString());
+            item.setSubmittedAt(entity.getSubmittedAt().toString());
             list.add(item);
         }
 
@@ -136,7 +136,7 @@ public class ResultService {
             ListResultItemByTestIdResponse item = new ListResultItemByTestIdResponse();
             BeanUtils.copyProperties(entity, item);
             item.setStartedAt(entity.getStartedAt().toString());
-            item.setSubmitAt(entity.getSubmitAt().toString());
+            item.setSubmittedAt(entity.getSubmittedAt().toString());
 
             item.setUserId(entity.getAccountId());
             UserEntity userEntity = userRepository.getById(entity.getAccountId());
@@ -166,7 +166,7 @@ public class ResultService {
         response.setUserId(resultEntity.getAccountId());
         response.setUsername(resultEntity.getUsername());
         response.setStartedAt(resultEntity.getStartedAt().toString());
-        response.setSubmitAt(resultEntity.getSubmitAt().toString());
+        response.setSubmittedAt(resultEntity.getSubmittedAt().toString());
         response.setCorrected(resultEntity.getCorrected());
 
         // Thông tin chi tiết lần thi

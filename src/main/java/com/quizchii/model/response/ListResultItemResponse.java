@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class ListResultItemResponse {
     private String startedAt;
-    private String submitAt;
+    private String submittedAt;
     private Integer corrected;
     private String testName;
 }
