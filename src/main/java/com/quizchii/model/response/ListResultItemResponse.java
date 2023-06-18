@@ -13,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListResultItemResponse {
+    private Long resultId;
     private String startedAt;
     private String submittedAt;
     private Integer corrected;

@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ResultResponse {
     private Long userId;
+    private Long resultId;
     private String username;
     private String startedAt;
     private String submittedAt;

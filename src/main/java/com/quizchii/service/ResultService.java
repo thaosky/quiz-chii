@@ -98,6 +98,7 @@ public class ResultService {
         response.setUsername(login);
         response.setSubmittedAt(request.getSubmittedAt());
         response.setResultDetails(detailResponses);
+        response.setResultId(saved.getId());
         return response;
     }
 
@@ -113,8 +114,10 @@ public class ResultService {
         for (ResultEntity entity : resultEntityList) {
             ListResultItemResponse item = new ListResultItemResponse();
             BeanUtils.copyProperties(entity, item);
+            item.setResultId(entity.getId());
             item.setStartedAt(entity.getStartedAt().toString());
             item.setSubmittedAt(entity.getSubmittedAt().toString());
+            item.setResultId(entity.getId());
             list.add(item);
         }
 
@@ -164,6 +167,7 @@ public class ResultService {
                 .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.RESULT_NOT_FOUND));
 
         response.setUserId(resultEntity.getAccountId());
+        response.setResultId(resultEntity.getId());
         response.setUsername(resultEntity.getUsername());
         response.setStartedAt(resultEntity.getStartedAt().toString());
         response.setSubmittedAt(resultEntity.getSubmittedAt().toString());
