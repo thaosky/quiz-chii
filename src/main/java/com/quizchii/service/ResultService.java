@@ -74,7 +74,11 @@ public class ResultService {
         Timestamp submittedAt = Util.convertTimestampToString(request.getSubmittedAt());
         resultEntity.setSubmittedAt(submittedAt);
         resultEntity.setAccountId(request.getUserId());
-        resultEntity.setUsername(request.getUsername());
+
+        UserEntity userEntity = userRepository.findById(request.getUserId()).orElseThrow(
+                () -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.USER_NOT_EXIST)
+        );
+
         resultEntity.setTestId(request.getTestId());
         resultEntity.setCorrected(point);
         ResultEntity saved = resultRepository.save(resultEntity);
@@ -94,9 +98,7 @@ public class ResultService {
         response.setCorrected(point);
         response.setStartedAt(request.getStartedAt());
         response.setUserId(request.getUserId());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String login = authentication.getName();
-        response.setUsername(login);
+        response.setUsername(userEntity.getUsername());
         response.setSubmittedAt(request.getSubmittedAt());
         response.setResultDetails(detailResponses);
         response.setResultId(saved.getId());
@@ -123,9 +125,12 @@ public class ResultService {
         }
 
         response.setList(list);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String login = authentication.getName();
-        response.setUsername(login);
+
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(
+                () -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.USER_NOT_EXIST)
+        );
+        // Todo
+        response.setUsername(userEntity.getUsername());
         response.setUserId(id);
 
         return response;
@@ -169,10 +174,15 @@ public class ResultService {
 
         response.setUserId(resultEntity.getAccountId());
         response.setResultId(resultEntity.getId());
-        response.setUsername(resultEntity.getUsername());
+
+        UserEntity userEntity = userRepository.findById(resultEntity.getAccountId()).orElseThrow(
+                () -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.USER_NOT_EXIST)
+        );
+
         response.setStartedAt(resultEntity.getStartedAt().toString());
         response.setSubmittedAt(resultEntity.getSubmittedAt().toString());
         response.setCorrected(resultEntity.getCorrected());
+        response.setUsername(userEntity.getUsername());
 
         // Thông tin chi tiết lần thi
         List<ResultDetailResponse> list = new ArrayList<>();
