@@ -42,4 +42,14 @@ public class ResultController {
                 new ResponseData<>()
                         .success(resultService.listResultByTestId(id)));
     }
+
+
+    // Api xem chi tiết lịch sử 1 lần thi
+//    @GetMapping("/{id}")
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+//    public ResponseEntity<?> getResultDetail(@PathVariable Long id) {
+//        return ResponseEntity.ok().body(
+//                new ResponseData<>()
+//                        .success(resultService.getResultDetail(id)));
+//    }
 }

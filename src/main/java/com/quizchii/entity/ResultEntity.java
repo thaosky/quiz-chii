@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -22,7 +23,7 @@ public class ResultEntity {
     private Long testId;
     private String testName;
     private Long accountId;
-    private Date startedAt;
-    private Date submitAt;
+    private Timestamp startedAt;
+    private Timestamp submitAt;
     private Integer corrected;
 }

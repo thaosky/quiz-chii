@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Getter
@@ -12,8 +13,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListResultItemResponse {
-    private Date startedAt;
-    private Date submitAt;
+    private String startedAt;
+    private String submitAt;
     private Integer corrected;
     private String testName;
 }

@@ -2,6 +2,7 @@ package com.quizchii.service;
 
 import com.quizchii.common.BusinessException;
 import com.quizchii.common.StatusCode;
+import com.quizchii.common.Util;
 import com.quizchii.entity.*;
 import com.quizchii.model.request.ResultDetailRequest;
 import com.quizchii.model.request.ResultRequest;
@@ -16,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,9 +68,11 @@ public class ResultService {
 
         // Lưu kết quả thi (Ngày, giờ, điểm)
         ResultEntity resultEntity = new ResultEntity();
-        resultEntity.setStartedAt(request.getStartedAt());
+        Timestamp statedAt = Util.convertStringToTimestamp(request.getStartedAt());
+        resultEntity.setStartedAt(statedAt);
         resultEntity.setTestName(request.getTestName());
-        resultEntity.setSubmitAt(request.getSubmitAt());
+        Timestamp submittedAt = Util.convertStringToTimestamp(request.getSubmitAt());
+        resultEntity.setSubmitAt(submittedAt);
         resultEntity.setAccountId(request.getUserId());
         resultEntity.setTestId(request.getTestId());
         resultEntity.setCorrected(point);
@@ -144,4 +148,8 @@ public class ResultService {
         response.setTestName(test.getName());
         return response;
     }
+
+//    public Object getResultDetail(Long id) {
+//        ResultDetailResponse
+//    }
 }
