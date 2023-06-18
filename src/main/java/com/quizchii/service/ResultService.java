@@ -133,6 +133,7 @@ public class ResultService {
         for (ResultEntity entity : resultEntityList) {
             ListResultItemByTestIdResponse item = new ListResultItemByTestIdResponse();
             BeanUtils.copyProperties(entity, item);
+            item.setStartedAt();
 
             item.setUserId(entity.getAccountId());
             UserEntity userEntity = userRepository.getById(entity.getAccountId());
