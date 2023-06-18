@@ -96,6 +96,7 @@ public class ResultService {
         // Trả lại kết quả
         ResultResponse response = new ResultResponse();
         response.setCorrected(point);
+        response.setTestName(test.getName());
         response.setStartedAt(request.getStartedAt());
         response.setUserId(request.getUserId());
         response.setUsername(userEntity.getUsername());
@@ -180,6 +181,7 @@ public class ResultService {
         );
 
         response.setStartedAt(resultEntity.getStartedAt().toString());
+        response.setTestName(resultEntity.getTestName());
         response.setSubmittedAt(resultEntity.getSubmittedAt().toString());
         response.setCorrected(resultEntity.getCorrected());
         response.setUsername(userEntity.getUsername());

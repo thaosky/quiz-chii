@@ -15,6 +15,7 @@ import java.util.List;
 public class ResultResponse {
     private Long userId;
     private Long resultId;
+    private String testName;
     private String username;
     private String startedAt;
     private String submittedAt;
