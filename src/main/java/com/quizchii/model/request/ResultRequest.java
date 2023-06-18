@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ResultRequest {
     private Long userId;  // Để lưu lịch sử thi cho user
+    private String username;  // Để lưu lịch sử thi cho user
     private Long testId; // Để lấy danh sách câu hỏi, đáp án đúng
     private String testName;
     private String startedAt;

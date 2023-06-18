@@ -74,6 +74,7 @@ public class ResultService {
         Timestamp submittedAt = Util.convertTimestampToString(request.getSubmittedAt());
         resultEntity.setSubmittedAt(submittedAt);
         resultEntity.setAccountId(request.getUserId());
+        resultEntity.setUsername(request.getUsername());
         resultEntity.setTestId(request.getTestId());
         resultEntity.setCorrected(point);
         ResultEntity saved = resultRepository.save(resultEntity);
