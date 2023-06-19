@@ -17,5 +17,6 @@ public class ListResultItemResponse {
     private String startedAt;
     private String submittedAt;
     private Integer corrected;
+    private Integer totalQuestion;
     private String testName;
 }

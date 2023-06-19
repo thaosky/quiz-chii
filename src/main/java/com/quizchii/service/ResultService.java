@@ -71,6 +71,7 @@ public class ResultService {
         Timestamp statedAt = Util.convertTimestampToString(request.getStartedAt());
         resultEntity.setStartedAt(statedAt);
         resultEntity.setTestName(request.getTestName());
+        resultEntity.setTotalQuestion(questionList.size());
         Timestamp submittedAt = Util.convertTimestampToString(request.getSubmittedAt());
         resultEntity.setSubmittedAt(submittedAt);
         resultEntity.setAccountId(request.getUserId());
@@ -122,6 +123,8 @@ public class ResultService {
             item.setStartedAt(entity.getStartedAt().toString());
             item.setSubmittedAt(entity.getSubmittedAt().toString());
             item.setResultId(entity.getId());
+            item.setTotalQuestion(entity.getTotalQuestion());
+            item.setTestName(entity.getTestName());
             list.add(item);
         }
 
@@ -147,7 +150,7 @@ public class ResultService {
             BeanUtils.copyProperties(entity, item);
             item.setStartedAt(entity.getStartedAt().toString());
             item.setSubmittedAt(entity.getSubmittedAt().toString());
-
+            item.setTotalQuestion(entity.getTotalQuestion());
             item.setUserId(entity.getAccountId());
             UserEntity userEntity = userRepository.getById(entity.getAccountId());
             item.setUsername(userEntity.getUsername());

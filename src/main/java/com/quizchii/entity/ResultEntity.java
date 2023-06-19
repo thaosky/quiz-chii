@@ -26,4 +26,5 @@ public class ResultEntity {
     private Timestamp startedAt;
     private Timestamp submittedAt;
     private Integer corrected;
+    private Integer totalQuestion;
 }

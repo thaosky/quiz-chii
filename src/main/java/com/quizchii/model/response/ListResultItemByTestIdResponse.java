@@ -15,6 +15,7 @@ import java.util.Date;
 public class ListResultItemByTestIdResponse {
     private String username;
     private Long userId;
+    private Integer totalQuestion;
     private String startedAt;
     private String submittedAt;
     private Integer corrected;
