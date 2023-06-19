@@ -157,8 +157,8 @@ public class AuthService {
             throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.USER_NOT_ACTIVE);
         }
         List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
-
-        return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
+        UserEntity userEntity = userRepository.getByUsername(userName);
+        return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userEntity.getName(), userDetails.getEmail(), roles);
     }
 
     public ResponseData changePassword(Long id, String password) {

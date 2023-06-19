@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Boolean existsByUsername(String username);
     Boolean existsByUsernameAndActive(String username, Integer active);
     Boolean existsByEmail(String email);
-
+    UserEntity getByUsername(String username);
     @Query(nativeQuery = true,
             value = "select u.*\n" +
                     "from users u\n" +
