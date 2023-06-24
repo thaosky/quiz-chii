@@ -8,7 +8,7 @@ import java.util.Set;
 @Data
 public class UserResponse {
 
-    private String id;
+    private Long id;
 
     private String username;
 
