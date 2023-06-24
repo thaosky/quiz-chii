@@ -76,9 +76,11 @@ public class UserService {
         userEntity.setEmail(request.getEmail());
         userEntity.setName(request.getName());
         userEntity.setActive(request.getActive());
-        String newPass = encoder.encode(request.getPassword());
-        userEntity.setPassword(newPass);
+        if (request.getPassword() != null && !"".equals(request.getPassword())) {
+            String newPass = encoder.encode(request.getPassword());
+            userEntity.setPassword(newPass);
 
+        }
         userRepository.save(userEntity);
         return request;
     }
