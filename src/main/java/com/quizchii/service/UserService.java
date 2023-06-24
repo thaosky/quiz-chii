@@ -72,8 +72,10 @@ public class UserService {
         }
         Optional<UserEntity> optional = userRepository.findById(id);
         UserEntity userEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.USER_NOT_EXIST));
+        if (userRepository.existsByEmail(request.getEmail()) && !request.getEmail().equals(userEntity.getEmail())) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.EMAIL_ALREADY_EXIST);
+        }
 
-        userEntity.setEmail(request.getEmail());
         userEntity.setName(request.getName());
         userEntity.setActive(request.getActive());
         if (request.getPassword() != null && !"".equals(request.getPassword())) {
