@@ -5,6 +5,7 @@ import com.quizchii.entity.RoleEntity;
 import com.quizchii.entity.UserEntity;
 import com.quizchii.common.BusinessException;
 import com.quizchii.model.ResponseData;
+import com.quizchii.model.request.ChangePasswordRequest;
 import com.quizchii.model.request.LoginRequest;
 import com.quizchii.model.request.RegisterRequest;
 import com.quizchii.model.response.JwtResponse;
@@ -193,6 +194,24 @@ public class AuthService {
             } else {
                 throw new BusinessException(HttpStatus.FORBIDDEN, MessageCode.FORBIDDEN);
             }
+        }
+
+        ResponseData responseData = new ResponseData<>();
+        responseData.setData(MessageCode.CHANGE_PASSWORD_SUCCESS);
+        return responseData;
+    }
+
+    public ResponseData changePassword(Long id, ChangePasswordRequest request) {
+        Optional<UserEntity> optional = userRepository.findById(id);
+        UserEntity userEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.USER_NOT_EXIST));
+        String oldPasswordEncoder = encoder.encode(request.getOldPassword());
+        if (userEntity.getPassword().equals(oldPasswordEncoder)) {
+            String passwordEncoder = encoder.encode(request.getNewPassword());
+            // đổi pass
+            userEntity.setPassword(passwordEncoder);
+            userRepository.save(userEntity);
+        } else {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.WRONG_PASSWORD);
         }
 
         ResponseData responseData = new ResponseData<>();

@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,10 +24,12 @@ import java.util.*;
 public class UserService {
     private final UserRepository userRepository;
     private final AuthService authService;
+    private final PasswordEncoder encoder;
 
-    public UserService(UserRepository userRepository, AuthService authService) {
+    public UserService(UserRepository userRepository, AuthService authService, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.authService = authService;
+        this.encoder = encoder;
     }
 
     public ListResponse getAll(Integer pageSize, Integer pageNo, String sortName, String sortDir, String username, String name) {
@@ -73,6 +76,8 @@ public class UserService {
         userEntity.setEmail(request.getEmail());
         userEntity.setName(request.getName());
         userEntity.setActive(request.getActive());
+        String newPass = encoder.encode(request.getPassword());
+        userEntity.setPassword(newPass);
 
         userRepository.save(userEntity);
         return request;

@@ -2,6 +2,7 @@ package com.quizchii.controller;
 
 import javax.validation.Valid;
 
+import com.quizchii.model.request.ChangePasswordRequest;
 import com.quizchii.model.request.LoginRequest;
 import com.quizchii.model.request.RegisterRequest;
 import com.quizchii.model.response.JwtResponse;
@@ -34,7 +35,7 @@ public class AuthController {
 
     @PostMapping("/{id}/change-password")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> changePassword(@PathVariable Long id, @Param("password") String password) {
-        return ResponseEntity.ok(authService.changePassword(id, password));
+    public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest request) {
+        return ResponseEntity.ok(authService.changePassword(id, request));
     }
 }

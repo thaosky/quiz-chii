@@ -15,4 +15,6 @@ public class UpdateUserRequest {
     private String email;
 
     private Integer active;
+
+    private String password;
 }
