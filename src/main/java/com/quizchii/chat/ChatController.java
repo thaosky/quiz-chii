@@ -1,33 +1,31 @@
 package com.quizchii.chat;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
 @Slf4j
 public class ChatController {
 
-    @MessageMapping("/chat.sendMessage")
-    @SendTo("/topic/public")
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
-        log.info("{}", chatMessage.getSender());
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
+    @MessageMapping("/message")
+    @SendTo("/chatroom/public")
+    public ChatMessage receiveMessage(@Payload ChatMessage chatMessage) {
         return chatMessage;
     }
 
-    @MessageMapping("/chat.addUser")
-    @SendTo("/topic/public")
-    public ChatMessage addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        chatMessage.setSender(authentication.getName());
-        log.info("============= SENDER {}", chatMessage);
-
-        headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+    @MessageMapping("/private-message")
+    public ChatMessage recMessage(@Payload ChatMessage chatMessage) {
+        simpMessagingTemplate.convertAndSendToUser(chatMessage.getReceiverName(), "/private", chatMessage);
+        System.out.println(chatMessage.toString());
         return chatMessage;
     }
 }
+
