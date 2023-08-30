@@ -4,7 +4,7 @@ import com.quizchii.model.ResponseData;
 import com.quizchii.model.request.RegisterRequest;
 import com.quizchii.model.request.UpdateUserRequest;
 import com.quizchii.security.AuthService;
-import com.quizchii.service.UserService;
+import com.quizchii.service.impl.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;

@@ -4,6 +4,7 @@ import com.quizchii.common.RoleEnum;
 import com.quizchii.entity.RoleEntity;
 import com.quizchii.entity.UserEntity;
 import com.quizchii.common.BusinessException;
+import com.quizchii.entity.VerificationToken;
 import com.quizchii.model.ResponseData;
 import com.quizchii.model.request.ChangePasswordRequest;
 import com.quizchii.model.request.LoginRequest;
@@ -12,6 +13,7 @@ import com.quizchii.model.response.JwtResponse;
 import com.quizchii.model.response.UserResponse;
 import com.quizchii.repository.RoleRepository;
 import com.quizchii.repository.UserRepository;
+import com.quizchii.repository.VerificationTokenRepository;
 import com.quizchii.security.jwt.JwtUtils;
 import com.quizchii.security.services.UserDetailsImpl;
 import com.quizchii.common.MessageCode;
@@ -25,10 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,12 +42,15 @@ public class AuthService {
 
     final JwtUtils jwtUtils;
 
-    public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    private final VerificationTokenRepository tokenRepository;
+
+    public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, VerificationTokenRepository tokenRepository) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.tokenRepository = tokenRepository;
     }
 
     /**
@@ -80,6 +82,10 @@ public class AuthService {
         user.setRoles(roles);
         UserEntity userEntity = userRepository.save(user);
 
+        // Verify email
+        String token = UUID.randomUUID().toString();
+        createVerificationTokenForUser(user.getId(), token);
+
         UserResponse response = new UserResponse();
         response.setUsername(user.getUsername());
         response.setActive(user.getActive());
@@ -88,6 +94,10 @@ public class AuthService {
         return response;
     }
 
+    private void createVerificationTokenForUser(final Long userId, final String token) {
+        final VerificationToken myToken = new VerificationToken(token, userId);
+        tokenRepository.save(myToken);
+    }
 
     /**
      * Tạo tài khoản bởi Admin, có thể tạo nhiều role khác nhau

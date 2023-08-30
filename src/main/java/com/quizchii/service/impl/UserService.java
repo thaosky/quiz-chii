@@ -1,36 +1,46 @@
-package com.quizchii.service;
+package com.quizchii.service.impl;
 
 import com.quizchii.Enum.SortDir;
-import com.quizchii.entity.UserEntity;
 import com.quizchii.common.BusinessException;
 import com.quizchii.common.MessageCode;
+import com.quizchii.entity.UserEntity;
+import com.quizchii.entity.VerificationToken;
 import com.quizchii.model.ListResponse;
 import com.quizchii.model.request.UpdateUserRequest;
 import com.quizchii.model.response.UserResponse;
 import com.quizchii.repository.UserRepository;
+import com.quizchii.repository.VerificationTokenRepository;
 import com.quizchii.security.AuthService;
+import com.quizchii.service.IUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final AuthService authService;
     private final PasswordEncoder encoder;
+    private final JavaMailSender mailSender;
 
-    public UserService(UserRepository userRepository, AuthService authService, PasswordEncoder encoder) {
+
+    public UserService(UserRepository userRepository, AuthService authService, PasswordEncoder encoder, JavaMailSender javaMailSender) {
         this.userRepository = userRepository;
         this.authService = authService;
         this.encoder = encoder;
+        this.mailSender = javaMailSender;
     }
+
 
     public ListResponse getAll(Integer pageSize, Integer pageNo, String sortName, String sortDir, String username, String name) {
 
@@ -66,6 +76,7 @@ public class UserService {
         return response;
     }
 
+
     public UpdateUserRequest updateUserById(Long id, UpdateUserRequest request) {
         if (!authService.havePermission(id)) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.FORBIDDEN);
@@ -87,6 +98,7 @@ public class UserService {
         return request;
     }
 
+
     public UserResponse getUserById(Long id) {
         Optional<UserEntity> optional = userRepository.findById(id);
 
@@ -99,4 +111,7 @@ public class UserService {
         response.setRole(userEntity.getRoles());
         return response;
     }
+
+
+
 }

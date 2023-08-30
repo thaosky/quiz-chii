@@ -31,6 +31,8 @@ public class UserEntity {
 
     private Integer active;
 
+    private boolean enabled;
+
     @NotBlank
     @Size(max = 50)
     @Email
@@ -55,5 +57,8 @@ public class UserEntity {
         this.email = email;
         this.password = password;
         this.active = 1;
+        this.enabled = false;
     }
+
+
 }

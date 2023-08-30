@@ -15,12 +15,12 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
             value = "select distinct q.* from question q\n" +
                     "                  left join question_tag qt on qt.question_id = q.id\n" +
                     "                  left join tag t on t.id = qt.tag_id\n" +
-                    "where (q.content LIKE  CONCAT('%', :content, '%') or :content is null)\n" +
+                    "where (q.question LIKE  CONCAT('%', :content, '%') or :content is null)\n" +
                     "    and (tag_id =  :tagId or :tagId is null)",
             countQuery = "select count( distinct q.id) from question q\n" +
                     "                  left join question_tag qt on qt.question_id = q.id\n" +
                     "                  left join tag t on t.id = qt.tag_id\n" +
-                    "where (q.content LIKE  CONCAT('%', :content, '%') or :content is null)\n" +
+                    "where (q.question LIKE  CONCAT('%', :content, '%') or :content is null)\n" +
                     "    and (tag_id =  :tagId or :tagId is null)"
     )
     Page<QuestionEntity> listQuestion(String content, Long tagId, Pageable pageable);

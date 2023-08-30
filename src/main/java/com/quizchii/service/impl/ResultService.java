@@ -1,4 +1,4 @@
-package com.quizchii.service;
+package com.quizchii.service.impl;
 
 import com.quizchii.common.BusinessException;
 import com.quizchii.common.MessageCode;
