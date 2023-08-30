@@ -59,7 +59,43 @@ public class AuthService {
      * @param signUpRequest
      * @return
      */
-    public UserResponse registerUser(RegisterRequest signUpRequest) {
+//    public UserResponse registerUser(RegisterRequest signUpRequest) {
+//
+//        // Check username, password
+//        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+//            throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.USERNAME_ALREADY_EXIST);
+//        }
+//        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+//            throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.EMAIL_ALREADY_EXIST);
+//        }
+//
+//        UserEntity user = new UserEntity(signUpRequest.getUsername(), signUpRequest.getName(),
+//                signUpRequest.getEmail(),
+//                encoder.encode(signUpRequest.getPassword()));
+//
+//        // Set role mặc định là USER
+//        Set<RoleEntity> roles = new HashSet<>();
+//        RoleEntity userRole = roleRepository.findByName(RoleEnum.ROLE_USER)
+//                .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.ROLE_NOT_FOUND));
+//        roles.add(userRole);
+//
+//        user.setRoles(roles);
+//        UserEntity userEntity = userRepository.save(user);
+//
+//        // Verify email
+//        String token = UUID.randomUUID().toString();
+//        createVerificationTokenForUser(user.getId(), token);
+//
+//        UserResponse response = new UserResponse();
+//        response.setUsername(user.getUsername());
+//        response.setActive(user.getActive());
+//        response.setEmail(user.getEmail());
+//        response.setRole(userEntity.getRoles());
+//        return response;
+//    }
+
+
+    public UserEntity registerUser(RegisterRequest signUpRequest) {
 
         // Check username, password
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -86,15 +122,10 @@ public class AuthService {
         String token = UUID.randomUUID().toString();
         createVerificationTokenForUser(user.getId(), token);
 
-        UserResponse response = new UserResponse();
-        response.setUsername(user.getUsername());
-        response.setActive(user.getActive());
-        response.setEmail(user.getEmail());
-        response.setRole(userEntity.getRoles());
-        return response;
+        return userEntity;
     }
 
-    private void createVerificationTokenForUser(final Long userId, final String token) {
+    public void createVerificationTokenForUser(final Long userId, final String token) {
         final VerificationToken myToken = new VerificationToken(token, userId);
         tokenRepository.save(myToken);
     }
