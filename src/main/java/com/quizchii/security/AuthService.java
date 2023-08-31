@@ -1,5 +1,6 @@
 package com.quizchii.security;
 
+import antlr.Token;
 import com.quizchii.common.RoleEnum;
 import com.quizchii.entity.RoleEntity;
 import com.quizchii.entity.UserEntity;
@@ -17,7 +18,10 @@ import com.quizchii.repository.VerificationTokenRepository;
 import com.quizchii.security.jwt.JwtUtils;
 import com.quizchii.security.services.UserDetailsImpl;
 import com.quizchii.common.MessageCode;
+import com.quizchii.service.SendMailService;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,14 +46,21 @@ public class AuthService {
 
     final JwtUtils jwtUtils;
 
+    final JavaMailSender mailSender;
+
+
+    final SendMailService sendMailService;
+
     private final VerificationTokenRepository tokenRepository;
 
-    public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, VerificationTokenRepository tokenRepository) {
+    public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, JavaMailSender mailSender, SendMailService sendMailService, VerificationTokenRepository tokenRepository) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.mailSender = mailSender;
+        this.sendMailService = sendMailService;
         this.tokenRepository = tokenRepository;
     }
 
@@ -93,8 +104,6 @@ public class AuthService {
 //        response.setRole(userEntity.getRoles());
 //        return response;
 //    }
-
-
     public UserEntity registerUser(RegisterRequest signUpRequest) {
 
         // Check username, password
@@ -128,6 +137,10 @@ public class AuthService {
     public void createVerificationTokenForUser(final Long userId, final String token) {
         final VerificationToken myToken = new VerificationToken(token, userId);
         tokenRepository.save(myToken);
+    }
+
+    public VerificationToken getVerificationToken(final String VerificationToken) {
+        return tokenRepository.findByToken(VerificationToken);
     }
 
     /**
@@ -194,12 +207,17 @@ public class AuthService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         String userName = userDetails.getUsername();
+
+        // User active
         Boolean active = userRepository.existsByUsernameAndActive(userName, 1);
         if (!active) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.USER_NOT_ACTIVE);
         }
         List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
         UserEntity userEntity = userRepository.getByUsername(userName);
+        if (!userEntity.isEnabled()) {
+            throw new BusinessException(HttpStatus.FORBIDDEN, MessageCode.NOT_VERIFY);
+        }
         return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userEntity.getName(), userDetails.getEmail(), roles);
     }
 
@@ -296,5 +314,67 @@ public class AuthService {
         Optional<UserEntity> optional = userRepository.findById(id);
         UserEntity userEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.USER_NOT_EXIST));
         return userEntity.getUsername().equals(login);
+    }
+
+    public ResponseData userConfirmRegistration(String token) {
+
+        final VerificationToken verificationToken = getVerificationToken(token);
+
+        // không tìm được token
+        if (verificationToken == null) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.TOKEN_NOT_VALID);
+        }
+
+        final Long userId = verificationToken.getUserId();
+        final Calendar cal = Calendar.getInstance();
+
+        // Hết hạn token
+        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            throw new BusinessException(HttpStatus.FORBIDDEN, MessageCode.TOKEN_EXPIRY);
+        }
+
+        UserEntity user = userRepository.findById(userId).get();
+        user.setEnabled(true);
+        userRepository.save(user);
+        String mess = MessageCode.VERIFICATION_SUCCESS;
+        ResponseData response = new ResponseData();
+        response.success(mess);
+        return response;
+    }
+
+
+    public void serverConfirmRegistration(UserEntity userEntity) {
+        final Long userId = userEntity.getId();
+        final String token = UUID.randomUUID().toString();
+        createVerificationTokenForUser(userId, token);
+
+        final SimpleMailMessage email = sendMailService.constructEmailMessage(userEntity, token);
+        mailSender.send(email);
+    }
+
+    /**
+     * @param userId
+     * @return VerificationToken đã được update token mới
+     */
+    private VerificationToken generateNewToken(Long userId) {
+        VerificationToken verifyToken = tokenRepository.findByUserId(userId);
+        verifyToken.updateToken(UUID.randomUUID().toString());
+        verifyToken = tokenRepository.save(verifyToken);
+        return verifyToken;
+    }
+
+    public boolean resendRegistrationToken(String email) {
+        // Kiểm tra xem email đã đăng ký chưa
+        UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(
+                () -> new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.EMAIL_NOT_EXIST)
+        );
+
+        // Generate new token cùng thời gian verify
+        VerificationToken newToken = generateNewToken(userEntity.getId());
+
+        // Gửi email
+        final SimpleMailMessage content = sendMailService.constructEmailMessage(userEntity, newToken.getToken());
+        mailSender.send(content);
+        return true;
     }
 }

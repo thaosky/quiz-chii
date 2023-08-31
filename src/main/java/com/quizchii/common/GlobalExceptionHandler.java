@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseData> handleException(BusinessException e) {
         e.printStackTrace();
         ResponseData responseData = new ResponseData();
-        responseData.error(e.getMessage());
+        responseData.error(e.getStatusCode(), e.getMessage());
         return ResponseEntity.status(e.getStatusCode()).body(responseData);
     }
 

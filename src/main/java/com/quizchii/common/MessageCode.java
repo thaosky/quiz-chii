@@ -10,7 +10,12 @@ public  class MessageCode {
     public static  final String USERNAME_ALREADY_EXIST = "Username đã tồn tại";
     public static  final String USER_NOT_EXIST = "User không tồn tại";
     public static  final String EMAIL_ALREADY_EXIST = "Email đã tồn tại";
+    public static  final String EMAIL_NOT_EXIST = "Vui lòng kiểm tra lại. Email không tồn tại";
     public static  final String ROLE_NOT_FOUND = "Role không tồn tại";
     public static  final String CHANGE_PASSWORD_SUCCESS = "Thay đổi mật khẩu thành công";
     public static  final String USER_NOT_ACTIVE = "Tài khoản không active. Vui lòng liên hệ Admin";
+    public static  final String TOKEN_EXPIRY = "Mã xác nhận đã hết hạn";
+    public static  final String TOKEN_NOT_VALID = "Mã xác nhận không chính xác";
+    public static  final String NOT_VERIFY = "Vui lòng xác nhận email";
+    public static  final String VERIFICATION_SUCCESS = "Xác nhận email thành công";
 }
