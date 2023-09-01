@@ -18,4 +18,9 @@ public  class MessageCode {
     public static  final String TOKEN_NOT_VALID = "Mã xác nhận không chính xác";
     public static  final String NOT_VERIFY = "Vui lòng xác nhận email";
     public static  final String VERIFICATION_SUCCESS = "Xác nhận email thành công";
+
+    // File
+    public static  final String CANNOT_UPLOAD = "Không thể upload file ";
+    public static  final String UPLOAD_SUCCESSFULLY = "Upload thành công file ";
+    public static final String NOT_EXCEL_FILE = "Vui lòng upload file excel";
 }
