@@ -18,7 +18,7 @@ public class ResultController {
    private final ResultService resultService;
 
     @PostMapping
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> submitTest(@RequestBody ResultRequest result) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -27,7 +27,7 @@ public class ResultController {
 
     // Api xem danh sách lịch sử thi của user
     @GetMapping("/user/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> listResultByUserId(@PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -36,7 +36,7 @@ public class ResultController {
 
     // Api thống kê lịch sử thi của 1 bài quiz
     @GetMapping("/test/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> listResultByTestId(@PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -46,7 +46,7 @@ public class ResultController {
 
      // Api xem chi tiết lịch sử 1 lần thi
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> getResultDetail(@PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()

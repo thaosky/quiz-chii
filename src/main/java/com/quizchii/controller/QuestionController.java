@@ -32,7 +32,7 @@ public class QuestionController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> create(@RequestBody QuestionRequest request) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -40,7 +40,7 @@ public class QuestionController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> create(@RequestBody QuestionRequest request, @PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -56,7 +56,7 @@ public class QuestionController {
 
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         ResponseData responseData = new ResponseData();
         questionService.delete(id);
@@ -66,14 +66,14 @@ public class QuestionController {
     }
 
     @PostMapping("/{id}/add-tag")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> addTag(@PathVariable Long id, @RequestBody List<TagEntity> tagList) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
                         .success(questionService.addTagByQuestion(id, tagList)));
     }
     @DeleteMapping("/{id}/delete-tag/{tagId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> deleteTagByQuestion(@PathVariable Long id, @PathVariable Long tagId) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()

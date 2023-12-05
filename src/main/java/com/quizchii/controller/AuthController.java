@@ -34,7 +34,7 @@ public class AuthController {
     }
 
     @PostMapping("/{id}/change-password")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest request) {
         return ResponseEntity.ok(authService.changePassword(id, request));
     }

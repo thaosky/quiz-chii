@@ -30,7 +30,7 @@ public class TagController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> createTag(@RequestBody TagEntity tag) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -38,7 +38,7 @@ public class TagController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> updateTag(@RequestBody TagEntity tagEntity, @PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -46,7 +46,7 @@ public class TagController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> deleteTag(@PathVariable Long id) {
         tagService.delete(id);
         return new ResponseEntity<>(new ResponseData<>()

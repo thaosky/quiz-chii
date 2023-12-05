@@ -31,6 +31,8 @@ public class UserEntity {
 
     private Integer active;
 
+    private Long classId; // Define user hoc lop nao, nullable
+
     @NotBlank
     @Size(max = 50)
     @Email

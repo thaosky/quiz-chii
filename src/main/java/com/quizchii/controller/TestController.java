@@ -33,6 +33,7 @@ public class TestController {
     // Lấy bài thi cho Admin (Bao gồm cả câu trả lời)
     // Lấy bài thi cho User (Không bao gồm câu trả lời)
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -41,7 +42,7 @@ public class TestController {
 
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         ResponseData responseData = new ResponseData();
         testService.delete(id);
@@ -49,7 +50,7 @@ public class TestController {
     }
 
     @PostMapping()
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> createTest(@RequestBody TestResponse testResponse) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -58,7 +59,7 @@ public class TestController {
 
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> updateTest(@RequestBody TestResponse testResponse, @PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
