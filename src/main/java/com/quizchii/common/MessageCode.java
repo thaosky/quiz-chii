@@ -13,4 +13,8 @@ public  class MessageCode {
     public static  final String ROLE_NOT_FOUND = "Role không tồn tại";
     public static  final String CHANGE_PASSWORD_SUCCESS = "Thay đổi mật khẩu thành công";
     public static  final String USER_NOT_ACTIVE = "Tài khoản không active. Vui lòng liên hệ Admin";
+    // File
+    public static  final String CANNOT_UPLOAD = "Không thể upload file ";
+    public static  final String UPLOAD_SUCCESSFULLY = "Upload thành công file ";
+    public static final String NOT_EXCEL_FILE = "Vui lòng upload file excel";
 }
