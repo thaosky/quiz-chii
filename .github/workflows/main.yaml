@@ -14,13 +14,13 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
-          java-version: 17
+          java-version: 8
 
 #      - name: Unit Tests
 #        run: mvn -B test --file pom.xml
 
       - name: Build the app
         run:
-          mvn clean
+          mvn clean install
           mvn -B package --file pom.xml
 
