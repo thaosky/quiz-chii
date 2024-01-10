@@ -72,7 +72,9 @@ public class ExcelHelper {
                         case 6:
                             question.setCorrectAnswer((int) currentCell.getNumericCellValue());
                             break;
-
+                        case 7:
+                            question.setExplanation(currentCell.getStringCellValue());
+                            break;
                         default:
                             break;
                     }

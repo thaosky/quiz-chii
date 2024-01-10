@@ -61,6 +61,7 @@ public class ResultService {
             resultDetailEntity.setAnswer4(questionList.get(i).getAnswer4());
             resultDetailEntity.setCorrectAnswer(questionList.get(i).getCorrectAnswer());
             resultDetailEntity.setAnswered(resultList.get(i).getAnswered());
+            resultDetailEntity.setExplanation(questionList.get(i).getExplanation());
 
             resultDetailEntities.add(resultDetailEntity);
         }

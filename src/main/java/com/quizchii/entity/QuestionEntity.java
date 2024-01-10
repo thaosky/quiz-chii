@@ -22,6 +22,8 @@ public class QuestionEntity {
 
     private String content;
 
+    private String explanation;
+
     @Column(name = "answer_1")
     private String answer1;
     @Column(name = "answer_2")

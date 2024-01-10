@@ -1,6 +1,8 @@
 package com.quizchii.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -11,12 +13,14 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @Setter
-public class ClassEntity {
+@AllArgsConstructor
+@NoArgsConstructor
+public class AchievementConfig {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
+    private String achievementCode;
     private String name;
     private String description;
-    private Long teacherId;
 }
