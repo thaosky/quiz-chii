@@ -21,5 +21,6 @@ public class QuestionRequest {
     private String answer3;
     private String answer4;
     private Integer correctAnswer;
+    private String explanation;
     private List<TagEntity> tagList;
 }

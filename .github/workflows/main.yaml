@@ -24,3 +24,10 @@ jobs:
           mvn clean install
           -B package --file pom.xml
 
+      - name: Build Docker Image
+        uses: actions/build-push-actions@v2
+        with:
+          context: .
+          dockerfile: Dockerfile
+          push: false
+          tags: ${{ secrets.DOCKER_HUB_USERNAME}}/spring-boot-quizchii:$(date-'%Y-%m-%d')
