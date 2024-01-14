@@ -5,22 +5,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AchievementConfig {
+@Table(name = "achievement_config")
+public class AchievementConfigEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String achievementCode;
     private String name;
-    private String description;
+    private String message; // Chúc mừng bạn....
+    @Column(unique = true)
+    private Integer daysStreak;
 }

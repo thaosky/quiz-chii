@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,8 +32,6 @@ public class UserEntity {
 
     private Integer active;
 
-    private Long classId; // Define user hoc lop nao, nullable
-
     @NotBlank
     @Size(max = 50)
     @Email
@@ -41,6 +40,8 @@ public class UserEntity {
     @NotBlank
     @Size(max = 120)
     private String password;
+
+    private Timestamp lastActive; // Phục vụ cho achievement
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

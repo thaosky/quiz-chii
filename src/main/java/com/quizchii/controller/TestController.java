@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("api/tests")
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -31,9 +33,16 @@ public class TestController {
     }
 
     // Lấy bài thi cho Admin (Bao gồm cả câu trả lời)
+    @GetMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getByIdAdmin(@PathVariable Long id) {
+        return ResponseEntity.ok().body(
+                new ResponseData<>()
+                        .success(testService.getByIdAdmin(id)));
+    }
+
     // Lấy bài thi cho User (Không bao gồm câu trả lời)
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
@@ -46,6 +55,15 @@ public class TestController {
     public ResponseEntity<?> delete(@PathVariable Long id) {
         ResponseData responseData = new ResponseData();
         testService.delete(id);
+        return new ResponseEntity<>(responseData,HttpStatus.NO_CONTENT);
+    }
+
+
+    @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
+    public ResponseEntity<?> deleteIds(@RequestBody List<Long> ids) {
+        ResponseData responseData = new ResponseData();
+        testService.deleteIds(ids);
         return new ResponseEntity<>(responseData,HttpStatus.NO_CONTENT);
     }
 

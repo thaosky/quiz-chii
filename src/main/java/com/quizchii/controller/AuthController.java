@@ -1,16 +1,15 @@
 package com.quizchii.controller;
 
-import javax.validation.Valid;
-
 import com.quizchii.model.request.ChangePasswordRequest;
 import com.quizchii.model.request.LoginRequest;
 import com.quizchii.model.request.RegisterRequest;
 import com.quizchii.model.response.JwtResponse;
 import com.quizchii.security.AuthService;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

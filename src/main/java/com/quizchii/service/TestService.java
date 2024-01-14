@@ -66,7 +66,6 @@ public class TestService {
     }
 
     public TestResponse getById(Long testId) {
-        boolean isAmin = authService.isAdmin();
         List<QuestionEntity> questionListForAdmin = questionRepository.findAllByTestId(testId);
         List<QuestionEntity> questionListForUser = new ArrayList<>();
         for(QuestionEntity question: questionListForAdmin) {
@@ -79,11 +78,20 @@ public class TestService {
         TestEntity testEntity = testRepository.findById(testId).get();
         TestResponse dto = new TestResponse();
         BeanUtils.copyProperties(testEntity, dto);
-        if (isAmin) {
-            dto.setQuestionList(questionListForAdmin);
-        } else {
-            dto.setQuestionList(questionListForUser);
-        }
+        dto.setQuestionList(questionListForUser);
+
+        dto.setTagList(tagEntityList);
+        return dto;
+    }
+
+    public TestResponse getByIdAdmin(Long testId) {
+        List<QuestionEntity> questionListForAdmin = questionRepository.findAllByTestId(testId);
+        List<TagEntity> tagEntityList = tagRepository.findAllByTestId(testId);
+
+        TestEntity testEntity = testRepository.findById(testId).get();
+        TestResponse dto = new TestResponse();
+        BeanUtils.copyProperties(testEntity, dto);
+        dto.setQuestionList(questionListForAdmin);
 
         dto.setTagList(tagEntityList);
         return dto;
@@ -166,5 +174,21 @@ public class TestService {
         // xoa cau hoi
         List<TestQuestionEntity> list1 = testQuestionRepository.findAllByTestId(id);
         testQuestionRepository.deleteAll(list1);
+    }
+
+    public void deleteIds(List<Long> ids) {
+        for (Long id: ids) {
+            Optional<TestEntity> optional = testRepository.findById(id);
+            TestEntity testEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.TAG_NOT_FOUND));
+            testRepository.delete(testEntity);
+
+            // xoa tag
+            List<TestTagEntity> list = testTagRepository.findAllByTestId(id);
+            testTagRepository.deleteAll(list);
+
+            // xoa cau hoi
+            List<TestQuestionEntity> list1 = testQuestionRepository.findAllByTestId(id);
+            testQuestionRepository.deleteAll(list1);
+        }
     }
 }
