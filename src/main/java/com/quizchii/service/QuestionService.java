@@ -7,6 +7,7 @@ import com.quizchii.entity.QuestionTagEntity;
 import com.quizchii.entity.TagEntity;
 import com.quizchii.common.BusinessException;
 import com.quizchii.model.ListResponse;
+import com.quizchii.model.request.DeleteQuestionRequest;
 import com.quizchii.model.request.QuestionRequest;
 import com.quizchii.model.response.QuestionResponse;
 import com.quizchii.repository.QuestionRepository;
@@ -130,8 +131,8 @@ public class QuestionService {
     }
 
     @Transactional
-    public void deleteIds(List<Long> ids) {
-        for(Long id: ids) {
+    public void deleteIds(DeleteQuestionRequest request) {
+        for(Long id: request.getIds()) {
             Optional<QuestionEntity> optional = questionRepository.findById(id);
             QuestionEntity questionEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.TAG_NOT_FOUND));
             questionRepository.delete(questionEntity);

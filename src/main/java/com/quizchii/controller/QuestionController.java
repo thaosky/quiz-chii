@@ -1,6 +1,7 @@
 package com.quizchii.controller;
 
 import com.quizchii.entity.TagEntity;
+import com.quizchii.model.request.DeleteQuestionRequest;
 import com.quizchii.model.request.QuestionRequest;
 import com.quizchii.model.ResponseData;
 import com.quizchii.service.QuestionService;
@@ -68,9 +69,9 @@ public class QuestionController {
 
     @DeleteMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
-    public ResponseEntity<?> deleteIds(@RequestBody List<Long> ids) {
+    public ResponseEntity<?> deleteIds(@RequestBody DeleteQuestionRequest request) {
         ResponseData responseData = new ResponseData();
-        questionService.deleteIds(ids);
+        questionService.deleteIds(request);
         return new ResponseEntity<>(responseData, HttpStatus.NO_CONTENT);
     }
 
