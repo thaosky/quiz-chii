@@ -129,6 +129,18 @@ public class QuestionService {
         questionTagRepository.deleteAll(list);
     }
 
+    @Transactional
+    public void deleteIds(List<Long> ids) {
+        for(Long id: ids) {
+            Optional<QuestionEntity> optional = questionRepository.findById(id);
+            QuestionEntity questionEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.TAG_NOT_FOUND));
+            questionRepository.delete(questionEntity);
+
+            List<QuestionTagEntity> list = questionTagRepository.findAllByQuestionId(id);
+            questionTagRepository.deleteAll(list);
+        }
+    }
+
     public QuestionRequest update(QuestionRequest request, Long id) {
         QuestionEntity questionEntity = questionRepository.findById(id).get();
         BeanUtils.copyProperties(request, questionEntity);

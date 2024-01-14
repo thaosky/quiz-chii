@@ -6,6 +6,7 @@ import com.quizchii.model.ResponseData;
 import com.quizchii.service.QuestionService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +64,14 @@ public class QuestionController {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
                         .success(responseData));
+    }
+
+    @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
+    public ResponseEntity<?> deleteIds(@RequestBody List<Long> ids) {
+        ResponseData responseData = new ResponseData();
+        questionService.deleteIds(ids);
+        return new ResponseEntity<>(responseData, HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/{id}/add-tag")
