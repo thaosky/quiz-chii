@@ -21,12 +21,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @AllArgsConstructor
@@ -38,8 +35,6 @@ public class AchievementService {
 
     public ListResponse<UserAchievementResponse> getAchievementByUserId(Long userId, Integer pageSize, Integer pageNo, String sortName, String sortDir) {
         ListResponse<UserAchievementResponse> response = new ListResponse();
-
-        create(userId);
 
         // Paging
         Sort sortable = Sort.by("id").descending();
@@ -69,22 +64,4 @@ public class AchievementService {
         response.setTotalPage((int) page.getTotalPages());
         return response;
     }
-
-    // Xem da hoc bao nhieu ngay lien tiep
-    public int create(Long userId) {
-        Optional<UserEntity> optional = userRepository.findById(userId);
-        UserEntity userEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.USER_NOT_EXIST));
-
-        // Neu user chua hoc ngay nao => Set streak = 1
-        if (userEntity.getLastActive() == null) {
-            return 1;
-        }
-        long time1 = userEntity.getLastActive().getTime(); // (Mon 31 December 2018 13:19:25)
-        long time2 = new Timestamp(System.currentTimeMillis()).getTime();
-
-        int res = Util.daysBetween(time1, time2);
-        return res + 1;
-    }
-
-
 }

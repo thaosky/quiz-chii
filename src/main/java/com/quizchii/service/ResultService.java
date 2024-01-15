@@ -1,6 +1,5 @@
 package com.quizchii.service;
 
-import com.quizchii.Enum.TestType;
 import com.quizchii.common.BusinessException;
 import com.quizchii.common.MessageCode;
 import com.quizchii.common.Util;
@@ -12,15 +11,11 @@ import com.quizchii.repository.*;
 import com.quizchii.security.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,11 +32,15 @@ public class ResultService {
 
     public ResultResponse submitTest(ResultRequest request) {
 
-        Optional<TestEntity> optional = testRepository.findById(request.getTestId());
-        TestEntity test = optional.orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.TEST_NOT_FOUND));
+        Optional<TestEntity> optionalTest = testRepository.findById(request.getTestId());
+        TestEntity test = optionalTest.orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.TEST_NOT_FOUND));
 
         List<ResultDetailRequest> resultList = request.getResultDetails();
         List<QuestionEntity> questionList = questionRepository.findAllByTestId(test.getId());
+
+        UserEntity userEntity = userRepository.findById(request.getUserId()).orElseThrow(
+                () -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.USER_NOT_EXIST)
+        );
 
         // Lưu kết quả thi chi tiết
         // Duyệt qua từng câu trả lời của user
@@ -71,17 +70,14 @@ public class ResultService {
 
         // Lưu kết quả thi (Ngày, giờ, điểm)
         ResultEntity resultEntity = new ResultEntity();
-        Timestamp statedAt = Util.convertTimestampToString(request.getStartedAt());
+        Timestamp statedAt = Util.convertStringToTimestamp(request.getStartedAt());
         resultEntity.setStartedAt(statedAt);
         resultEntity.setTestName(request.getTestName());
         resultEntity.setTotalQuestion(questionList.size());
-        Timestamp submittedAt = Util.convertTimestampToString(request.getSubmittedAt());
+        Timestamp submittedAt = Util.convertStringToTimestamp(request.getSubmittedAt());
         resultEntity.setSubmittedAt(submittedAt);
         resultEntity.setAccountId(request.getUserId());
 
-        UserEntity userEntity = userRepository.findById(request.getUserId()).orElseThrow(
-                () -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.USER_NOT_EXIST)
-        );
 
         resultEntity.setTestId(request.getTestId());
         resultEntity.setCorrected(point);
@@ -97,8 +93,23 @@ public class ResultService {
         }
         resultDetailRepository.saveAll(resultDetailEntities);
 
-        // Trả lại kết quả
+
         ResultResponse response = new ResultResponse();
+
+        /*
+         * Streak
+         */
+        // Streak day
+        int streakDays = calculateStreakDays(userEntity.getLastActive(), submittedAt);
+        // First submit or not
+        if (isFistSubmitOnDay(userEntity.getLastActive(), submittedAt)) {
+            response.setFirstSubmit(true);
+            response.setMessageStreak("Chúc mừng bạn đã học liên tiếp " + streakDays + " ngày");
+        }
+        userEntity.setLastActive(submittedAt);
+        userRepository.save(userEntity);
+
+        // Trả lại kết quả
         response.setCorrected(point);
         response.setTestName(test.getName());
         response.setStartedAt(request.getStartedAt());
@@ -195,7 +206,7 @@ public class ResultService {
         // Thông tin chi tiết lần thi
         List<ResultDetailResponse> list = new ArrayList<>();
         List<ResultDetailEntity> entities = resultDetailRepository.findAllByResultId(id);
-        for(ResultDetailEntity entity: entities) {
+        for (ResultDetailEntity entity : entities) {
             ResultDetailResponse item = new ResultDetailResponse();
             BeanUtils.copyProperties(entity, item);
 
@@ -204,5 +215,25 @@ public class ResultService {
 
         response.setResultDetails(list);
         return response;
+    }
+
+
+    // Xem da hoc bao nhieu ngay lien tiep
+    private int calculateStreakDays(Timestamp lastActive, Timestamp currentTime) {
+
+        // Neu user chua hoc ngay nao => Set streak = 1
+        if (lastActive == null) {
+            return 1;
+        }
+        long time1 = lastActive.getTime();
+        long time2 = currentTime.getTime();
+
+        int res = Util.daysBetween(time1, time2);
+        return res + 1;
+    }
+
+
+    private boolean isFistSubmitOnDay(Timestamp lastActive, Timestamp currentTime) {
+        return Util.isSameDay(lastActive, currentTime);
     }
 }

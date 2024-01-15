@@ -21,4 +21,7 @@ public class ResultResponse {
     private String submittedAt;
     private Integer corrected; // Số câu tl đúng
     List<ResultDetailResponse> resultDetails; // Danh sách câu hỏi, đáp án, phương án đã chọn
+
+    private boolean isFirstSubmit;
+    private String messageStreak;
 }

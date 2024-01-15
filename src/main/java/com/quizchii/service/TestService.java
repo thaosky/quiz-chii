@@ -166,8 +166,8 @@ public class TestService {
         TestEntity testEntity = new TestEntity();
         BeanUtils.copyProperties(testResponse, testEntity);
         if (TestType.ONCE_WITH_TIME.equals(testEntity.getTestType())) {
-            testEntity.setStartTime(Util.convertTimestampToString(testResponse.getStartTime()));
-            testEntity.setEndTime(Util.convertTimestampToString(testResponse.getEndTime()));
+            testEntity.setStartTime(Util.convertStringToTimestamp(testResponse.getStartTime()));
+            testEntity.setEndTime(Util.convertStringToTimestamp(testResponse.getEndTime()));
         }
         TestEntity save = testRepository.save(testEntity);
         // save test_question
@@ -196,8 +196,8 @@ public class TestService {
         TestEntity testEntity = testRepository.findById(id).get();
         BeanUtils.copyProperties(request, testEntity);
         if (TestType.ONCE_WITH_TIME.equals(testEntity.getTestType())) {
-            testEntity.setStartTime(Util.convertTimestampToString(request.getStartTime()));
-            testEntity.setEndTime(Util.convertTimestampToString(request.getEndTime()));
+            testEntity.setStartTime(Util.convertStringToTimestamp(request.getStartTime()));
+            testEntity.setEndTime(Util.convertStringToTimestamp(request.getEndTime()));
         } else {
             testEntity.setStartTime(null);
             testEntity.setEndTime(null);
