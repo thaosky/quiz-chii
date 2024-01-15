@@ -44,10 +44,10 @@ public class TestController {
     // Lấy bài thi cho User (Không bao gồm câu trả lời)
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
+    public ResponseEntity<?> getById(@PathVariable Long id, @Param("userId") Long userId) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
-                        .success(testService.getById(id)));
+                        .success(testService.getById(id, userId)));
     }
 
     // Ai cũng view đc
@@ -55,7 +55,7 @@ public class TestController {
     public ResponseEntity<?> viewTest(@PathVariable Long id) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
-                        .success(testService.getById(id)));
+                        .success(testService.viewTest(id)));
     }
 
 

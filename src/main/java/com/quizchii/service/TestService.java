@@ -20,7 +20,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +34,7 @@ public class TestService {
     private TestQuestionRepository testQuestionRepository;
     private TestTagRepository testTagRepository;
     private QuestionRepository questionRepository;
+    private ResultRepository resultRepository;
     private AuthService authService;
 
     public ListResponse<TestResponse> getAllTest(Integer pageSize, Integer pageNo, String sortName, String sortDir, String name, Long tagId) {
@@ -67,7 +70,13 @@ public class TestService {
         return response;
     }
 
-    public TestResponse getById(Long testId) {
+    public TestResponse viewTest(Long testId) {
+        // Get test
+        TestEntity testEntity = testRepository.findById(testId).get();
+        TestResponse dto = new TestResponse();
+        BeanUtils.copyProperties(testEntity, dto);
+
+        // Get list question
         List<QuestionEntity> questionListForAdmin = questionRepository.findAllByTestId(testId);
         List<QuestionEntity> questionListForUser = new ArrayList<>();
         for(QuestionEntity question: questionListForAdmin) {
@@ -75,18 +84,57 @@ public class TestService {
             BeanUtils.copyProperties(question, doneItem, "correctAnswer");
             questionListForUser.add(doneItem);
         }
+
+        // Get list tag
         List<TagEntity> tagEntityList = tagRepository.findAllByTestId(testId);
 
+        dto.setQuestionList(questionListForUser);
+        dto.setTagList(tagEntityList);
+        return dto;
+    }
+
+    public TestResponse getById(Long testId, Long userId) {
+        // Get test
         TestEntity testEntity = testRepository.findById(testId).get();
+        canAccessTest(testEntity, userId);
         TestResponse dto = new TestResponse();
         BeanUtils.copyProperties(testEntity, dto);
         if (TestType.ONCE_WITH_TIME.equals(testEntity.getTestType())) {
             dto.setStartTime(testEntity.getStartTime().toString());
             dto.setEndTime(testEntity.getEndTime().toString());
         }
+        // Get list question
+        List<QuestionEntity> questionListForAdmin = questionRepository.findAllByTestId(testId);
+        List<QuestionEntity> questionListForUser = new ArrayList<>();
+        for(QuestionEntity question: questionListForAdmin) {
+            QuestionEntity doneItem = new QuestionEntity();
+            BeanUtils.copyProperties(question, doneItem, "correctAnswer");
+            questionListForUser.add(doneItem);
+        }
+
+        // Get list tag
+        List<TagEntity> tagEntityList = tagRepository.findAllByTestId(testId);
+
         dto.setQuestionList(questionListForUser);
         dto.setTagList(tagEntityList);
         return dto;
+    }
+
+    private boolean canAccessTest(TestEntity test, Long userId) {
+        if (TestType.ONCE_WITH_TIME.equals(test.getTestType()) || TestType.ONCE_WITHOUT_TIME.equals(test.getTestType())) {
+            if (TestType.ONCE_WITH_TIME.equals(test.getTestType())) {
+                Timestamp now = new Timestamp(new Date().getTime());
+                if (now.before(test.getStartTime()) || now.after(test.getEndTime())) {
+                    throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.TEST_NOT_VALID);
+                }
+            }
+
+            List <ResultEntity> resultEntities = resultRepository.getAllByTestIdAndAccountId(test.getId(), userId);
+            if (!resultEntities.isEmpty()) {
+                throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.TEST_EXCEED_ONCE);
+            }
+        }
+        return true;
     }
 
     public TestResponse getByIdAdmin(Long testId) {
