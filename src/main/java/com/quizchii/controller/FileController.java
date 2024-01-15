@@ -11,6 +11,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @RestController
 @RequestMapping("api/file")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -40,4 +45,15 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseData<>().success(message));
     }
 
+    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
+
+    @PostMapping("upload-image")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile image) throws IOException {
+        StringBuilder fileName = new StringBuilder();
+        Path path = Paths.get(UPLOAD_DIRECTORY, image.getOriginalFilename());
+        fileName.append(image.getOriginalFilename());
+        Files.write(path, image.getBytes());
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseData<>().success("Upload thành công"));
+    }
 }
