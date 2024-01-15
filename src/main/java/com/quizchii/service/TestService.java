@@ -2,6 +2,8 @@ package com.quizchii.service;
 
 
 import com.quizchii.Enum.SortDir;
+import com.quizchii.Enum.TestType;
+import com.quizchii.common.Util;
 import com.quizchii.entity.*;
 import com.quizchii.common.BusinessException;
 import com.quizchii.model.ListResponse;
@@ -78,8 +80,11 @@ public class TestService {
         TestEntity testEntity = testRepository.findById(testId).get();
         TestResponse dto = new TestResponse();
         BeanUtils.copyProperties(testEntity, dto);
+        if (TestType.ONCE_WITH_TIME.equals(testEntity.getTestType())) {
+            dto.setStartTime(testEntity.getStartTime().toString());
+            dto.setEndTime(testEntity.getEndTime().toString());
+        }
         dto.setQuestionList(questionListForUser);
-
         dto.setTagList(tagEntityList);
         return dto;
     }
@@ -91,8 +96,11 @@ public class TestService {
         TestEntity testEntity = testRepository.findById(testId).get();
         TestResponse dto = new TestResponse();
         BeanUtils.copyProperties(testEntity, dto);
+        if (TestType.ONCE_WITH_TIME.equals(testEntity.getTestType())) {
+            dto.setStartTime(testEntity.getStartTime().toString());
+            dto.setEndTime(testEntity.getEndTime().toString());
+        }
         dto.setQuestionList(questionListForAdmin);
-
         dto.setTagList(tagEntityList);
         return dto;
     }
@@ -103,6 +111,10 @@ public class TestService {
 
         TestEntity testEntity = new TestEntity();
         BeanUtils.copyProperties(testResponse, testEntity);
+        if (TestType.ONCE_WITH_TIME.equals(testEntity.getTestType())) {
+            testEntity.setStartTime(Util.convertTimestampToString(testResponse.getStartTime()));
+            testEntity.setEndTime(Util.convertTimestampToString(testResponse.getEndTime()));
+        }
         TestEntity save = testRepository.save(testEntity);
         // save test_question
         for (QuestionEntity questionEntity : questionEntityList) {
@@ -129,6 +141,13 @@ public class TestService {
     public TestResponse update(TestResponse request, Long id) {
         TestEntity testEntity = testRepository.findById(id).get();
         BeanUtils.copyProperties(request, testEntity);
+        if (TestType.ONCE_WITH_TIME.equals(testEntity.getTestType())) {
+            testEntity.setStartTime(Util.convertTimestampToString(request.getStartTime()));
+            testEntity.setEndTime(Util.convertTimestampToString(request.getEndTime()));
+        } else {
+            testEntity.setStartTime(null);
+            testEntity.setEndTime(null);
+        }
         testRepository.save(testEntity);
 
         // xoa tag

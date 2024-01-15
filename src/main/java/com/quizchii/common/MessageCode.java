@@ -7,6 +7,8 @@ public  class MessageCode {
     public static  final String QUESTION_NOT_FOUND = "Không tìm thấy câu hỏi";
     public static  final String RESULT_NOT_FOUND = "Không tìm thấy lịch sử thi";
     public static  final String TEST_NOT_FOUND = "Không tìm thấy bài test";
+    public static  final String TEST_NOT_VALID = "Hiện tại không thể tham gia bài test này";
+    public static  final String TEST_EXCEED_ONCE = "Bạn đã tham gia bài test này";
     public static  final String USERNAME_ALREADY_EXIST = "Username đã tồn tại";
     public static  final String USER_NOT_EXIST = "User không tồn tại";
     public static  final String EMAIL_ALREADY_EXIST = "Email đã tồn tại";

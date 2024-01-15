@@ -17,6 +17,11 @@ public class ResultController {
 
    private final ResultService resultService;
 
+    /**
+     * API Tham gia thi
+     * @param result
+     * @return
+     */
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> submitTest(@RequestBody ResultRequest result) {
