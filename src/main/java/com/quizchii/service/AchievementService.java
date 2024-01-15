@@ -1,6 +1,7 @@
 package com.quizchii.service;
 
 import com.quizchii.Enum.SortDir;
+import com.quizchii.common.Util;
 import com.quizchii.entity.AchievementConfigEntity;
 import com.quizchii.entity.UserAchievementEntity;
 import com.quizchii.model.ListResponse;
@@ -32,15 +33,7 @@ public class AchievementService {
 
     public ListResponse<UserAchievementResponse> getAchievementByUserId(Long userId, Integer pageSize, Integer pageNo, String sortName, String sortDir) {
         ListResponse<UserAchievementResponse> response = new ListResponse();
-
-        // Paging
-        Sort sortable = Sort.by("id").descending();
-        if (sortName != null && SortDir.ASC.getValue().equals(sortDir)) {
-            sortable = Sort.by(sortName).ascending();
-        } else if (sortName != null && SortDir.DESC.getValue().equals(sortDir)) {
-            sortable = Sort.by(sortName).descending();
-        }
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sortable);
+        Pageable pageable = Util.createPageable(pageSize, pageNo, sortName, sortDir);
 
         Page<UserAchievementView> page = userAchievementRepository.listAchievementByUserId(userId, pageable);
 
@@ -62,7 +55,7 @@ public class AchievementService {
         return response;
     }
 
-    public boolean createAchievement(Long userId, int dayStreak, Timestamp summitedAt) {
+    public boolean createAchievement(Long userId, int dayStreak) {
         Optional<AchievementConfigEntity> achievementConfigOptional = achievementConfigRepository.findByDaysStreak(dayStreak);
         if (achievementConfigOptional.isPresent()) return false;
 
@@ -77,7 +70,6 @@ public class AchievementService {
         UserAchievementEntity userAchievementEntity = new UserAchievementEntity();
         userAchievementEntity.setAchievementId(achievementConfig.getId());
         userAchievementEntity.setUserId(userId);
-        userAchievementEntity.setTimeAchieved(summitedAt);
         userAchievementRepository.save(userAchievementEntity);
         return true;
     }

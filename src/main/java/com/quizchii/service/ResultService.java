@@ -108,7 +108,7 @@ public class ResultService {
             response.setMessageStreak("Chúc mừng bạn đã học liên tiếp " + streakDays + " ngày");
 
             //Check nhận achievement
-            achievementService.createAchievement(userEntity.getId(), streakDays, submittedAt);
+            achievementService.createAchievement(userEntity.getId(), streakDays);
         }
         userEntity.setLastActive(submittedAt);
         userRepository.save(userEntity);

@@ -1,6 +1,7 @@
 package com.quizchii.service;
 
 import com.quizchii.Enum.SortDir;
+import com.quizchii.common.Util;
 import com.quizchii.entity.QuestionTagEntity;
 import com.quizchii.entity.TagEntity;
 import com.quizchii.entity.TestTagEntity;
@@ -56,13 +57,7 @@ public class TagService {
         if ("".equals(name)) {
             name = null;
         }
-        Sort sortable = Sort.by("id").descending();
-        if (sortName != null && SortDir.ASC.getValue().equals(sortDir)) {
-            sortable = Sort.by(sortName).ascending();
-        } else if (sortName != null && SortDir.DESC.getValue().equals(sortDir)) {
-            sortable = Sort.by(sortName).descending();
-        }
-        Pageable pageable =  PageRequest.of(pageNo, pageSize, sortable);
+        Pageable pageable = Util.createPageable(pageSize, pageNo, sortName, sortDir);
         Page<TagEntity> page = tagRepository.findAllByName(name, pageable);
         ListResponse<TagEntity> response = new ListResponse();
         response.setItems(page.toList());

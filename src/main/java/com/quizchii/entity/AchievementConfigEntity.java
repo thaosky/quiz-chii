@@ -21,4 +21,5 @@ public class AchievementConfigEntity {
     private String message; // Chúc mừng bạn....
     @Column(unique = true)
     private Integer daysStreak;
+    private String urlImage;
 }

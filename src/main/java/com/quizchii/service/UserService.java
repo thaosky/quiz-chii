@@ -1,6 +1,7 @@
 package com.quizchii.service;
 
 import com.quizchii.Enum.SortDir;
+import com.quizchii.common.Util;
 import com.quizchii.entity.UserEntity;
 import com.quizchii.common.BusinessException;
 import com.quizchii.common.MessageCode;
@@ -40,13 +41,7 @@ public class UserService {
         if ("".equals(name)) {
             name = null;
         }
-        Sort sortable = Sort.by("id").descending();
-        if (sortName != null && SortDir.ASC.getValue().equals(sortDir)) {
-            sortable = Sort.by(sortName).ascending();
-        } else if (sortName != null && SortDir.DESC.getValue().equals(sortDir)) {
-            sortable = Sort.by(sortName).descending();
-        }
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sortable);
+        Pageable pageable = Util.createPageable(pageSize, pageNo, sortName, sortDir);
         Page<UserEntity> page = userRepository.listUser(username, name, pageable);
 
         ListResponse<UserResponse> response = new ListResponse();

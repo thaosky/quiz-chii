@@ -2,6 +2,7 @@ package com.quizchii.service;
 
 import com.quizchii.Enum.SortDir;
 import com.quizchii.common.MessageCode;
+import com.quizchii.common.Util;
 import com.quizchii.entity.QuestionEntity;
 import com.quizchii.entity.QuestionTagEntity;
 import com.quizchii.entity.TagEntity;
@@ -39,13 +40,7 @@ public class QuestionService {
         if ("".equals(content)) {
             content = null;
         }
-        Sort sortable = Sort.by("id").descending();
-        if (sortName != null && SortDir.ASC.getValue().equals(sortDir)) {
-            sortable = Sort.by(sortName).ascending();
-        } else if (sortName != null && SortDir.DESC.getValue().equals(sortDir)) {
-            sortable = Sort.by(sortName).descending();
-        }
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sortable);
+        Pageable pageable = Util.createPageable(pageSize, pageNo, sortName, sortDir);
         Page<QuestionEntity> page = questionRepository.listQuestion(content, tagId, pageable);
 
         ListResponse<QuestionResponse> response = new ListResponse();

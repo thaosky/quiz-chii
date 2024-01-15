@@ -1,5 +1,10 @@
 package com.quizchii.common;
 
+import com.quizchii.Enum.SortDir;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,5 +36,17 @@ public class Util {
 
     public static boolean isSameDay(Timestamp t1, Timestamp t2) {
         return simpleDateFormat.format(t1).equals(simpleDateFormat.format(t2));
+    }
+
+    public static Pageable createPageable(Integer pageSize, Integer pageNo, String sortName, String sortDir) {
+        // Paging
+        Sort sortable = Sort.by("id").descending();
+        if (sortName != null && SortDir.ASC.getValue().equals(sortDir)) {
+            sortable = Sort.by(sortName).ascending();
+        } else if (sortName != null && SortDir.DESC.getValue().equals(sortDir)) {
+            sortable = Sort.by(sortName).descending();
+        }
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sortable);
+        return pageable;
     }
 }
