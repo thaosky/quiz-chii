@@ -29,6 +29,7 @@ public class ResultService {
     private final QuestionRepository questionRepository;
     private final AuthService authService;
     private final UserRepository userRepository;
+    private final AchievementService achievementService;
 
     public ResultResponse submitTest(ResultRequest request) {
 
@@ -105,9 +106,14 @@ public class ResultService {
         if (isFistSubmitOnDay(userEntity.getLastActive(), submittedAt)) {
             response.setFirstSubmit(true);
             response.setMessageStreak("Chúc mừng bạn đã học liên tiếp " + streakDays + " ngày");
+
+            //Check nhận achievement
+            achievementService.createAchievement(userEntity.getId(), streakDays, submittedAt);
         }
         userEntity.setLastActive(submittedAt);
         userRepository.save(userEntity);
+
+
 
         // Trả lại kết quả
         response.setCorrected(point);

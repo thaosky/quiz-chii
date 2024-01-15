@@ -1,10 +1,8 @@
 package com.quizchii.service;
 
 import com.quizchii.Enum.SortDir;
-import com.quizchii.common.BusinessException;
-import com.quizchii.common.MessageCode;
-import com.quizchii.common.Util;
-import com.quizchii.entity.UserEntity;
+import com.quizchii.entity.AchievementConfigEntity;
+import com.quizchii.entity.UserAchievementEntity;
 import com.quizchii.model.ListResponse;
 import com.quizchii.model.response.UserAchievementResponse;
 import com.quizchii.model.view.UserAchievementView;
@@ -17,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -63,5 +60,25 @@ public class AchievementService {
         response.setTotalElements((int) page.getTotalElements());
         response.setTotalPage((int) page.getTotalPages());
         return response;
+    }
+
+    public boolean createAchievement(Long userId, int dayStreak, Timestamp summitedAt) {
+        Optional<AchievementConfigEntity> achievementConfigOptional = achievementConfigRepository.findByDaysStreak(dayStreak);
+        if (achievementConfigOptional.isPresent()) return false;
+
+        AchievementConfigEntity achievementConfig = achievementConfigOptional.get();
+        // Chỉ nhận được phần thưởng ở lần đầu
+        Optional<UserAchievementEntity> userAchievementEntityOptional = userAchievementRepository
+                .getAllByUserIdAndAchievementId(userId, achievementConfig.getId());
+
+        if (userAchievementEntityOptional.isPresent()) return false;
+
+        // Có config suiable + chưa nhận lần nào => Lưu
+        UserAchievementEntity userAchievementEntity = new UserAchievementEntity();
+        userAchievementEntity.setAchievementId(achievementConfig.getId());
+        userAchievementEntity.setUserId(userId);
+        userAchievementEntity.setTimeAchieved(summitedAt);
+        userAchievementRepository.save(userAchievementEntity);
+        return true;
     }
 }

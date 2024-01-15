@@ -3,11 +3,15 @@ package com.quizchii.repository;
 import com.quizchii.entity.UserAchievementEntity;
 import com.quizchii.model.response.UserAchievementResponse;
 import com.quizchii.model.view.UserAchievementView;
+import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserAchievementRepository extends JpaRepository<UserAchievementEntity, Long> {
@@ -23,4 +27,6 @@ public interface UserAchievementRepository extends JpaRepository<UserAchievement
                     "where ua.user_id = :userId",
             nativeQuery = true)
     Page<UserAchievementView> listAchievementByUserId(Long userId, Pageable pageable);
+
+    Optional<UserAchievementEntity> getAllByUserIdAndAchievementId(Long userId, Long achievementConfigId);
 }
