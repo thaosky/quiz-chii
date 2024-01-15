@@ -1,5 +1,6 @@
 package com.quizchii.controller;
 
+import com.quizchii.Enum.TestType;
 import com.quizchii.model.ResponseData;
 import com.quizchii.model.response.TestResponse;
 import com.quizchii.service.TestService;
@@ -25,11 +26,12 @@ public class TestController {
                                         @Param("sortName") String sortName,
                                         @Param("sortDir") String sortDir,
                                         @Param("name") String name,
-                                        @Param("tagId") Long tagId
+                                        @Param("tagId") Long tagId,
+                                        @Param("testType") TestType testType
     ) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
-                        .success(testService.getAllTest(pageSize, pageNo, sortName, sortDir, name, tagId)));
+                        .success(testService.getAllTest(pageSize, pageNo, sortName, sortDir, name, tagId, testType)));
     }
 
     // Lấy bài thi cho Admin (Bao gồm cả câu trả lời)
@@ -59,13 +61,12 @@ public class TestController {
     }
 
 
-
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         ResponseData responseData = new ResponseData();
         testService.delete(id);
-        return new ResponseEntity<>(responseData,HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(responseData, HttpStatus.NO_CONTENT);
     }
 
 
@@ -74,7 +75,7 @@ public class TestController {
     public ResponseEntity<?> deleteIds(@RequestBody List<Long> ids) {
         ResponseData responseData = new ResponseData();
         testService.deleteIds(ids);
-        return new ResponseEntity<>(responseData,HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(responseData, HttpStatus.NO_CONTENT);
     }
 
     @PostMapping()

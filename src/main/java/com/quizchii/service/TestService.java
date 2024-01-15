@@ -37,7 +37,13 @@ public class TestService {
     private ResultRepository resultRepository;
     private AuthService authService;
 
-    public ListResponse<TestResponse> getAllTest(Integer pageSize, Integer pageNo, String sortName, String sortDir, String name, Long tagId) {
+    public ListResponse<TestResponse> getAllTest(Integer pageSize,
+                                                 Integer pageNo,
+                                                 String sortName,
+                                                 String sortDir,
+                                                 String name,
+                                                 Long tagId,
+                                                 TestType testType) {
         // Paging & sorting
         if ("".equals(name)) {
             name = null;
@@ -49,7 +55,7 @@ public class TestService {
             sortable = Sort.by(sortName).descending();
         }
         Pageable pageable = PageRequest.of(pageNo, pageSize, sortable);
-        Page<TestEntity> page = testRepository.listTest(name, tagId, pageable);
+        Page<TestEntity> page = testRepository.listTest(name, tagId, testType, pageable);
 
         ListResponse<TestResponse> response = new ListResponse();
         List<TestEntity> entities = page.toList();
