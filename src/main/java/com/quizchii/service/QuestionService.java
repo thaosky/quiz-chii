@@ -155,7 +155,3 @@ public class QuestionService {
         return request;
     }
 }
-// xin chào hợp béo ú
-// tôi là thảo đây
-///ádbasnfbnasfd
-/// adadaksdjas

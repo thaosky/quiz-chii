@@ -26,6 +26,13 @@ public class Util {
         }
     }
 
+
+    public static Timestamp addTime(Timestamp oldTime, int minute) {
+        long duration = (long) minute * 60 * 1000;
+        Timestamp newTime = new Timestamp(oldTime.getTime() + duration);
+        return newTime;
+    }
+
     public static int daysBetween(long time1, long time2) {
         // Set both times to 0:00:00
         time1 -= time1 % MILLIS_PER_DAY;
