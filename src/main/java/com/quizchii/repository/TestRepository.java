@@ -23,5 +23,5 @@ public interface TestRepository extends JpaRepository<TestEntity, Long> {
                     "where (q.name LIKE  CONCAT('%', :name, '%') or :name is null)\n" +
                     "    and (tag_id =  :tagId or :tagId is null)"
     )
-    Page<TestEntity> listTest(String name, Long tagId, TestType testType, Pageable pageable);
+    Page<TestEntity> listTest(String name, Long tagId, String testType, Pageable pageable);
 }

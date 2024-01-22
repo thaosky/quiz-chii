@@ -26,6 +26,7 @@ public class TestEntity {
     private Integer availableTime;
 
     // test mode = ONCE_WITH_TIME => start time, end time not null
+    @Enumerated(EnumType.STRING)
     private TestType testType;
     private Timestamp startTime;
     private Timestamp endTime;
