@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -24,6 +24,6 @@ public class UserAchievementEntity {
 
     private Long achievementId;
 
-    @CreatedDate
+    @CreationTimestamp
     private Timestamp timeAchieved;
 }

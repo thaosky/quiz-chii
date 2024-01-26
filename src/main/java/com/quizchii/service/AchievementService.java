@@ -57,8 +57,8 @@ public class AchievementService {
 
     public boolean createAchievement(Long userId, int dayStreak) {
         Optional<AchievementConfigEntity> achievementConfigOptional = achievementConfigRepository.findByDaysStreak(dayStreak);
-        if (achievementConfigOptional.isPresent()) return false;
 
+        if (achievementConfigOptional.isEmpty()) return false;
         AchievementConfigEntity achievementConfig = achievementConfigOptional.get();
         // Chỉ nhận được phần thưởng ở lần đầu
         Optional<UserAchievementEntity> userAchievementEntityOptional = userAchievementRepository

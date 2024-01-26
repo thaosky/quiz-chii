@@ -49,7 +49,11 @@ public class TestService {
             name = null;
         }
         Pageable pageable = Util.createPageable(pageSize, pageNo, sortName, sortDir);
-        Page<TestEntity> page = testRepository.listTest(name, tagId, testType.getValue(), pageable);
+        String testTypeParam = null;
+        if (testType != null) {
+            testTypeParam = testType.getValue();
+        }
+        Page<TestEntity> page = testRepository.listTest(name, tagId, testTypeParam, pageable);
 
         ListResponse<TestResponse> response = new ListResponse();
         List<TestEntity> entities = page.toList();

@@ -240,6 +240,7 @@ public class ResultService {
 
 
     private boolean isFistSubmitOnDay(Timestamp lastActive, Timestamp currentTime) {
-        return Util.isSameDay(lastActive, currentTime);
+        if (lastActive == null) return true;
+        return !Util.isSameDay(lastActive, currentTime);
     }
 }
