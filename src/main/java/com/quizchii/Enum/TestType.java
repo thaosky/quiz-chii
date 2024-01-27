@@ -6,7 +6,7 @@ package com.quizchii.Enum;
  * PRACTICE => Freestyle
  */
 public enum TestType {
-    ONCE_WITH_TIME("ONCE_WITH_TIME"), ONCE_WITHOUT_TIME("ONCE_WITH_TIME"), PRACTICE("PRACTICE");
+    ONCE_WITH_TIME("ONCE_WITH_TIME"), ONCE_WITHOUT_TIME("ONCE_WITHOUT_TIME"), PRACTICE("PRACTICE");
     private String value;
 
     TestType(String value) {
