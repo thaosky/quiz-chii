@@ -62,6 +62,8 @@ public class TestService {
             TestResponse item = new TestResponse();
             BeanUtils.copyProperties(entity, item);
             List<TagEntity> tagEntityList = tagRepository.findAllByTestId(entity.getId());
+            item.setStartTime(entity.getStartTime().toString());
+            item.setEndTime(entity.getEndTime().toString());
             item.setTagList(tagEntityList);
             testResponseList.add(item);
         }
