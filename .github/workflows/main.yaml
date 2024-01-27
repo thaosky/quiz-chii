@@ -52,8 +52,8 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            docker stop spring-boot-quizchii || true
-            docker rm spring-boot-quizchii || true
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME}}/spring-boot-quizchii:latest
-            docker run -d -p 80:8080 ${{ secrets.DOCKER_HUB_USERNAME}}/spring-boot-quizchii
+           sudo docker stop spring-boot-quizchii || true
+           sudo docker rm spring-boot-quizchii || true
+           sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME}}/spring-boot-quizchii:latest
+           sudo docker run -d -p 80:8080 ${{ secrets.DOCKER_HUB_USERNAME}}/spring-boot-quizchii
             
