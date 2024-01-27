@@ -193,9 +193,9 @@ public class TestService {
     public TestResponse update(TestResponse request, Long id) {
         TestEntity testEntity = testRepository.findById(id).get();
         BeanUtils.copyProperties(request, testEntity);
-        if (TestType.ONCE_WITH_TIME.equals(testEntity.getTestType())) {
+        if (TestType.ONCE_WITH_TIME.equals(request.getTestType())) {
             testEntity.setStartTime(Util.convertStringToTimestamp(request.getStartTime()));
-            testEntity.setEndTime(Util.addTime(testEntity.getStartTime(), testEntity.getAvailableTime()));
+            testEntity.setEndTime(Util.addTime(testEntity.getStartTime(), request.getAvailableTime()));
         } else {
             testEntity.setStartTime(null);
             testEntity.setEndTime(null);
