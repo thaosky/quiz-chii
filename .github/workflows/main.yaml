@@ -50,7 +50,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVITE_KEY }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
             docker stop spring-boot-quizchii || true
             docker rm spring-boot-quizchii || true
