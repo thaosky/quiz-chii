@@ -29,6 +29,6 @@ public class TestResponse {
     private List<QuestionEntity> questionList; // Trả về cho user thì field câu trả lời đúng phải set null
     private List<TagEntity> tagList;
 
+    private Float averagePoint;
     private Integer totalSubmit;
-    private Integer totalPoint;
 }

@@ -11,9 +11,9 @@ public interface TestResponseView {
 
     String getDescription();
 
-    Integer getTotalSubmit();
+    Float getAveragePoint();
 
-    Integer getTotalPoint();
+    Integer getTotalSubmit();
 
     Integer getAvailableTime();
 

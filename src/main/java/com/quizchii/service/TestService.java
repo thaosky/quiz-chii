@@ -60,7 +60,6 @@ public class TestService {
             TestResponse item = new TestResponse();
             BeanUtils.copyProperties(entity, item);
             List<TagEntity> tagEntityList = tagRepository.findAllByTestId(entity.getId());
-            item.setAvailableTime(entity.getAvailableTime());
             if (TestType.ONCE_WITH_TIME.equals(item.getTestType())) {
                 item.setStartTime(Util.convertTimestampToString(entity.getStartTime()));
                 item.setEndTime(Util.convertTimestampToString(entity.getEndTime()));
