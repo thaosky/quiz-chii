@@ -1,22 +1,20 @@
 package com.quizchii.service;
 
 
-import com.quizchii.Enum.SortDir;
 import com.quizchii.Enum.TestType;
+import com.quizchii.common.BusinessException;
+import com.quizchii.common.MessageCode;
 import com.quizchii.common.Util;
 import com.quizchii.entity.*;
-import com.quizchii.common.BusinessException;
 import com.quizchii.model.ListResponse;
 import com.quizchii.model.response.TestResponse;
-import com.quizchii.common.MessageCode;
+import com.quizchii.model.view.TestResponseView;
 import com.quizchii.repository.*;
 import com.quizchii.security.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -53,15 +51,16 @@ public class TestService {
         if (testType != null) {
             testTypeParam = testType.getValue();
         }
-        Page<TestEntity> page = testRepository.listTest(name, tagId, testTypeParam, pageable);
+        Page<TestResponseView> page = testRepository.listTest(name, tagId, testTypeParam, pageable);
 
         ListResponse<TestResponse> response = new ListResponse();
-        List<TestEntity> entities = page.toList();
+        List<TestResponseView> entities = page.toList();
         List<TestResponse> testResponseList = new ArrayList<>();
-        for (TestEntity entity : entities) {
+        for (TestResponseView entity : entities) {
             TestResponse item = new TestResponse();
             BeanUtils.copyProperties(entity, item);
             List<TagEntity> tagEntityList = tagRepository.findAllByTestId(entity.getId());
+            item.setAvailableTime(entity.getAvailableTime());
             if (TestType.ONCE_WITH_TIME.equals(item.getTestType())) {
                 item.setStartTime(Util.convertTimestampToString(entity.getStartTime()));
                 item.setEndTime(Util.convertTimestampToString(entity.getEndTime()));
