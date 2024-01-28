@@ -35,17 +35,9 @@ public class TestController {
     }
 
     // Lấy bài thi cho Admin (Bao gồm cả câu trả lời)
-    @GetMapping("/admin/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getByIdAdmin(@PathVariable Long id) {
-        return ResponseEntity.ok().body(
-                new ResponseData<>()
-                        .success(testService.getByIdAdmin(id)));
-    }
-
     // Lấy bài thi cho User (Không bao gồm câu trả lời)
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> getById(@PathVariable Long id, @Param("userId") Long userId) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()

@@ -102,6 +102,7 @@ public class TestService {
     }
 
     public TestResponse getById(Long testId, Long userId) {
+
         // Get test
         TestEntity testEntity = testRepository.findById(testId).get();
         canAccessTest(testEntity, userId);
@@ -113,22 +114,27 @@ public class TestService {
         }
         // Get list question
         List<QuestionEntity> questionListForAdmin = questionRepository.findAllByTestId(testId);
-        List<QuestionEntity> questionListForUser = new ArrayList<>();
-        for(QuestionEntity question: questionListForAdmin) {
-            QuestionEntity doneItem = new QuestionEntity();
-            BeanUtils.copyProperties(question, doneItem, "correctAnswer");
-            questionListForUser.add(doneItem);
+        dto.setQuestionList(questionListForAdmin);
+
+        boolean isAdmin = authService.isAdmin();
+        if (!isAdmin) {
+            List<QuestionEntity> questionListForUser = new ArrayList<>();
+            for(QuestionEntity question: questionListForAdmin) {
+                QuestionEntity doneItem = new QuestionEntity();
+                BeanUtils.copyProperties(question, doneItem, "correctAnswer");
+                questionListForUser.add(doneItem);
+            }
+            dto.setQuestionList(questionListForUser);
         }
 
         // Get list tag
         List<TagEntity> tagEntityList = tagRepository.findAllByTestId(testId);
-
-        dto.setQuestionList(questionListForUser);
         dto.setTagList(tagEntityList);
         return dto;
     }
 
     private boolean canAccessTest(TestEntity test, Long userId) {
+        if (authService.isAdmin()) return true; // Nếu là admin luôn truy cập dc test
         if (TestType.ONCE_WITH_TIME.equals(test.getTestType()) || TestType.ONCE_WITHOUT_TIME.equals(test.getTestType())) {
             if (TestType.ONCE_WITH_TIME.equals(test.getTestType())) {
                 Timestamp now = new Timestamp(new Date().getTime());
@@ -145,21 +151,6 @@ public class TestService {
         return true;
     }
 
-    public TestResponse getByIdAdmin(Long testId) {
-        List<QuestionEntity> questionListForAdmin = questionRepository.findAllByTestId(testId);
-        List<TagEntity> tagEntityList = tagRepository.findAllByTestId(testId);
-
-        TestEntity testEntity = testRepository.findById(testId).get();
-        TestResponse dto = new TestResponse();
-        BeanUtils.copyProperties(testEntity, dto);
-        if (TestType.ONCE_WITH_TIME.equals(testEntity.getTestType())) {
-            dto.setStartTime(testEntity.getStartTime().toString());
-            dto.setEndTime(testEntity.getEndTime().toString());
-        }
-        dto.setQuestionList(questionListForAdmin);
-        dto.setTagList(tagEntityList);
-        return dto;
-    }
 
     public TestResponse create(TestResponse testResponse) {
         List<QuestionEntity> questionEntityList = testResponse.getQuestionList();
