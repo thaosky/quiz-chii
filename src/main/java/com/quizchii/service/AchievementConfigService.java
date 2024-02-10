@@ -1,6 +1,7 @@
 package com.quizchii.service;
 
 import com.quizchii.Enum.SortDir;
+import com.quizchii.common.BusinessException;
 import com.quizchii.common.Util;
 import com.quizchii.entity.AchievementConfigEntity;
 import com.quizchii.entity.QuestionTagEntity;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -58,4 +60,12 @@ public class AchievementConfigService {
         return response;
     }
 
+    public AchievementConfigEntity create(AchievementConfigEntity achievementConfig) {
+        return achievementConfigRepository.save(achievementConfig);
+    }
+
+//    public void delete(Long id) {
+//       AchievementConfigEntity achievementConfig = achievementConfigRepository.findById(id).orElseThrow(new BusinessException(HttpStatus.NOT_FOUND, ));
+//        achievementConfigRepository.delete(achievementConfig);
+//    }
 }

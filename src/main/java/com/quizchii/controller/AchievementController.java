@@ -1,5 +1,6 @@
 package com.quizchii.controller;
 
+import com.quizchii.entity.AchievementConfigEntity;
 import com.quizchii.model.ResponseData;
 import com.quizchii.service.AchievementConfigService;
 import com.quizchii.service.AchievementService;
@@ -44,4 +45,26 @@ public class AchievementController {
                 new ResponseData<>()
                         .success(achievementConfigService.getAllAchievementConfig(name,pageSize, pageNo, sortName, sortDir)));
     }
+
+    @PostMapping("/configs")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> createAchievementConfig(
+            AchievementConfigEntity achievementConfig
+    ) {
+        return ResponseEntity.ok().body(
+                new ResponseData<>()
+                        .success(achievementConfigService.create(achievementConfig)));
+    }
+
+
+//    @DeleteMapping("/configs/{id}")
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<?> deleteAchievementConfig(
+//            @PathVariable Long id
+//    ) {
+//        return ResponseEntity.ok().body(
+//                new ResponseData<>()
+//                        .success(achievementConfigService.delete(id)));
+//    }
+
 }
