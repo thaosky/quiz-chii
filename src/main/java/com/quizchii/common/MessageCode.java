@@ -22,4 +22,5 @@ public  class MessageCode {
 
     // Achievement config
     public static final String ACHIEVEMENT_CONFIG_NOT_EXIST = "Cài đặt thành tựu không tồn tại";
+    public static final String ACHIEVEMENT_CONFIG_CONFLICT = "Cài đặt thành tựu đã tồn tại";
 }

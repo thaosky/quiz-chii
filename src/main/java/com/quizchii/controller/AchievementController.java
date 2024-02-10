@@ -50,11 +50,22 @@ public class AchievementController {
     @PostMapping("/configs")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createAchievementConfig(
-            AchievementConfigEntity achievementConfig
+           @RequestBody AchievementConfigEntity achievementConfig
     ) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
                         .success(achievementConfigService.create(achievementConfig)));
+    }
+
+    @PutMapping("/configs/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateAchievementConfig(
+           @RequestBody AchievementConfigEntity achievementConfig,
+           @PathVariable Long id
+    ) {
+        return ResponseEntity.ok().body(
+                new ResponseData<>()
+                        .success(achievementConfigService.update(achievementConfig, id)));
     }
 
 

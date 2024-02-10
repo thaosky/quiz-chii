@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -62,7 +63,20 @@ public class AchievementConfigService {
     }
 
     public AchievementConfigEntity create(AchievementConfigEntity achievementConfig) {
+        Optional<AchievementConfigEntity> optional = achievementConfigRepository.findByDaysStreak(achievementConfig.getDaysStreak());
+        if (optional.isPresent()) {
+            throw new BusinessException(HttpStatus.CONFLICT, MessageCode.ACHIEVEMENT_CONFIG_CONFLICT);
+        }
         return achievementConfigRepository.save(achievementConfig);
+    }
+
+    public AchievementConfigEntity update(AchievementConfigEntity achievementConfig, Long id) {
+        AchievementConfigEntity entity = achievementConfigRepository.findById(id).orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.ACHIEVEMENT_CONFIG_NOT_EXIST));
+        if (!entity.getId().equals(id)) {
+            throw new BusinessException(HttpStatus.CONFLICT, MessageCode.ACHIEVEMENT_CONFIG_CONFLICT);
+        }
+        BeanUtils.copyProperties(achievementConfig, entity, "id");
+        return achievementConfigRepository.save(entity);
     }
 
     public void delete(Long id) {
