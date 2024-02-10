@@ -72,7 +72,8 @@ public class AchievementConfigService {
 
     public AchievementConfigEntity update(AchievementConfigEntity achievementConfig, Long id) {
         AchievementConfigEntity entity = achievementConfigRepository.findById(id).orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.ACHIEVEMENT_CONFIG_NOT_EXIST));
-        if (!entity.getId().equals(id)) {
+        Optional<AchievementConfigEntity> optional = achievementConfigRepository.findByDaysStreak(achievementConfig.getDaysStreak());
+        if (optional.isPresent() && !optional.get().getId().equals(id)) {
             throw new BusinessException(HttpStatus.CONFLICT, MessageCode.ACHIEVEMENT_CONFIG_CONFLICT);
         }
         BeanUtils.copyProperties(achievementConfig, entity, "id");

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/achievements")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class AchievementController {
 
     private final AchievementService achievementService;
