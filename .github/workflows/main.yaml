@@ -36,6 +36,7 @@ jobs:
         with:
           username: ${{secrets.DOCKER_HUB_USERNAME}}
           password: ${{secrets.DOCKER_HUB_ACCESS_TOKEN}}
+
       - name: Push to Docker Hub
         uses: docker/build-push-action@v5
         with:
@@ -43,3 +44,16 @@ jobs:
           dockerfile: Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME}}/spring-boot-quizchii:latest
+
+      - name: Deploy to EC2 instance
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+           sudo docker stop quizchi-app || true
+           sudo docker rm quizchi-app || true
+           sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME}}/spring-boot-quizchii:latest
+           sudo docker run -d --name quizchi-app -p 80:8080 ${{ secrets.DOCKER_HUB_USERNAME}}/spring-boot-quizchii
+            

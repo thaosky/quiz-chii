@@ -1,22 +1,20 @@
 package com.quizchii.service;
 
 
-import com.quizchii.Enum.SortDir;
 import com.quizchii.Enum.TestType;
+import com.quizchii.common.BusinessException;
+import com.quizchii.common.MessageCode;
 import com.quizchii.common.Util;
 import com.quizchii.entity.*;
-import com.quizchii.common.BusinessException;
 import com.quizchii.model.ListResponse;
 import com.quizchii.model.response.TestResponse;
-import com.quizchii.common.MessageCode;
+import com.quizchii.model.view.TestResponseView;
 import com.quizchii.repository.*;
 import com.quizchii.security.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -53,15 +51,19 @@ public class TestService {
         if (testType != null) {
             testTypeParam = testType.getValue();
         }
-        Page<TestEntity> page = testRepository.listTest(name, tagId, testTypeParam, pageable);
+        Page<TestResponseView> page = testRepository.listTest(name, tagId, testTypeParam, pageable);
 
         ListResponse<TestResponse> response = new ListResponse();
-        List<TestEntity> entities = page.toList();
+        List<TestResponseView> entities = page.toList();
         List<TestResponse> testResponseList = new ArrayList<>();
-        for (TestEntity entity : entities) {
+        for (TestResponseView entity : entities) {
             TestResponse item = new TestResponse();
             BeanUtils.copyProperties(entity, item);
             List<TagEntity> tagEntityList = tagRepository.findAllByTestId(entity.getId());
+            if (TestType.ONCE_WITH_TIME.equals(item.getTestType())) {
+                item.setStartTime(Util.convertTimestampToString(entity.getStartTime()));
+                item.setEndTime(Util.convertTimestampToString(entity.getEndTime()));
+            }
             item.setTagList(tagEntityList);
             testResponseList.add(item);
         }
@@ -98,6 +100,7 @@ public class TestService {
     }
 
     public TestResponse getById(Long testId, Long userId) {
+
         // Get test
         TestEntity testEntity = testRepository.findById(testId).get();
         canAccessTest(testEntity, userId);
@@ -109,22 +112,27 @@ public class TestService {
         }
         // Get list question
         List<QuestionEntity> questionListForAdmin = questionRepository.findAllByTestId(testId);
-        List<QuestionEntity> questionListForUser = new ArrayList<>();
-        for(QuestionEntity question: questionListForAdmin) {
-            QuestionEntity doneItem = new QuestionEntity();
-            BeanUtils.copyProperties(question, doneItem, "correctAnswer");
-            questionListForUser.add(doneItem);
+        dto.setQuestionList(questionListForAdmin);
+
+        boolean isAdmin = authService.isAdmin();
+        if (!isAdmin) {
+            List<QuestionEntity> questionListForUser = new ArrayList<>();
+            for(QuestionEntity question: questionListForAdmin) {
+                QuestionEntity doneItem = new QuestionEntity();
+                BeanUtils.copyProperties(question, doneItem, "correctAnswer");
+                questionListForUser.add(doneItem);
+            }
+            dto.setQuestionList(questionListForUser);
         }
 
         // Get list tag
         List<TagEntity> tagEntityList = tagRepository.findAllByTestId(testId);
-
-        dto.setQuestionList(questionListForUser);
         dto.setTagList(tagEntityList);
         return dto;
     }
 
     private boolean canAccessTest(TestEntity test, Long userId) {
+        if (authService.isAdmin()) return true; // Nếu là admin luôn truy cập dc test
         if (TestType.ONCE_WITH_TIME.equals(test.getTestType()) || TestType.ONCE_WITHOUT_TIME.equals(test.getTestType())) {
             if (TestType.ONCE_WITH_TIME.equals(test.getTestType())) {
                 Timestamp now = new Timestamp(new Date().getTime());
@@ -141,21 +149,6 @@ public class TestService {
         return true;
     }
 
-    public TestResponse getByIdAdmin(Long testId) {
-        List<QuestionEntity> questionListForAdmin = questionRepository.findAllByTestId(testId);
-        List<TagEntity> tagEntityList = tagRepository.findAllByTestId(testId);
-
-        TestEntity testEntity = testRepository.findById(testId).get();
-        TestResponse dto = new TestResponse();
-        BeanUtils.copyProperties(testEntity, dto);
-        if (TestType.ONCE_WITH_TIME.equals(testEntity.getTestType())) {
-            dto.setStartTime(testEntity.getStartTime().toString());
-            dto.setEndTime(testEntity.getEndTime().toString());
-        }
-        dto.setQuestionList(questionListForAdmin);
-        dto.setTagList(tagEntityList);
-        return dto;
-    }
 
     public TestResponse create(TestResponse testResponse) {
         List<QuestionEntity> questionEntityList = testResponse.getQuestionList();
@@ -193,9 +186,9 @@ public class TestService {
     public TestResponse update(TestResponse request, Long id) {
         TestEntity testEntity = testRepository.findById(id).get();
         BeanUtils.copyProperties(request, testEntity);
-        if (TestType.ONCE_WITH_TIME.equals(testEntity.getTestType())) {
+        if (TestType.ONCE_WITH_TIME.equals(request.getTestType())) {
             testEntity.setStartTime(Util.convertStringToTimestamp(request.getStartTime()));
-            testEntity.setEndTime(Util.addTime(testEntity.getStartTime(), testEntity.getAvailableTime()));
+            testEntity.setEndTime(Util.addTime(testEntity.getStartTime(), request.getAvailableTime()));
         } else {
             testEntity.setStartTime(null);
             testEntity.setEndTime(null);

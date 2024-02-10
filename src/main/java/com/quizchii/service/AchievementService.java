@@ -1,6 +1,5 @@
 package com.quizchii.service;
 
-import com.quizchii.Enum.SortDir;
 import com.quizchii.common.Util;
 import com.quizchii.entity.AchievementConfigEntity;
 import com.quizchii.entity.UserAchievementEntity;
@@ -13,12 +12,9 @@ import com.quizchii.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
