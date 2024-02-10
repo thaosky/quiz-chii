@@ -2,6 +2,7 @@ package com.quizchii.service;
 
 import com.quizchii.Enum.SortDir;
 import com.quizchii.common.BusinessException;
+import com.quizchii.common.MessageCode;
 import com.quizchii.common.Util;
 import com.quizchii.entity.AchievementConfigEntity;
 import com.quizchii.entity.QuestionTagEntity;
@@ -64,8 +65,8 @@ public class AchievementConfigService {
         return achievementConfigRepository.save(achievementConfig);
     }
 
-//    public void delete(Long id) {
-//       AchievementConfigEntity achievementConfig = achievementConfigRepository.findById(id).orElseThrow(new BusinessException(HttpStatus.NOT_FOUND, ));
-//        achievementConfigRepository.delete(achievementConfig);
-//    }
+    public void delete(Long id) {
+       AchievementConfigEntity achievementConfig = achievementConfigRepository.findById(id).orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.ACHIEVEMENT_CONFIG_NOT_EXIST));
+        achievementConfigRepository.delete(achievementConfig);
+    }
 }

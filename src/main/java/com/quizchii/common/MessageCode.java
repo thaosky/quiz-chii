@@ -19,4 +19,7 @@ public  class MessageCode {
     public static  final String CANNOT_UPLOAD = "Không thể upload file ";
     public static  final String UPLOAD_SUCCESSFULLY = "Upload thành công file ";
     public static final String NOT_EXCEL_FILE = "Vui lòng upload file excel";
+
+    // Achievement config
+    public static final String ACHIEVEMENT_CONFIG_NOT_EXIST = "Cài đặt thành tựu không tồn tại";
 }
