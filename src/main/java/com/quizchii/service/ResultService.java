@@ -105,15 +105,14 @@ public class ResultService {
         // First submit or not
         if (isFistSubmitOnDay(userEntity.getLastActive(), submittedAt)) {
             response.setFirstSubmit(true);
-            response.setMessageStreak("Chúc mừng bạn đã học liên tiếp " + streakDays + " ngày");
+            userEntity.setTotalDaysStreak(streakDays);
+            response.setMessageStreak(String.format(MessageCode.ACHIEVEMENT_DAILY_CONGRA, streakDays));
 
             //Check nhận achievement
             achievementService.createAchievement(userEntity.getId(), streakDays);
         }
         userEntity.setLastActive(submittedAt);
         userRepository.save(userEntity);
-
-
 
         // Trả lại kết quả
         response.setCorrected(point);

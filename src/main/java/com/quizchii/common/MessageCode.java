@@ -25,4 +25,5 @@ public  class MessageCode {
     public static final String ACHIEVEMENT_CONFIG_CONFLICT = "Cài đặt thành tựu đã tồn tại";
 
     public static final String ACHIEVEMENT_DAILY = "Bạn đã học liên tục %s ngày";
+    public static final String ACHIEVEMENT_DAILY_CONGRA  = "Chúc mừng bạn đã học liên tục %s ngày";
 }

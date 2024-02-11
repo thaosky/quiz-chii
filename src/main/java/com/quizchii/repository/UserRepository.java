@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -31,4 +33,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
                     "  and (u.name LIKE CONCAT('%', :name, '%') or :name is null)"
     )
     Page<UserEntity> listUser(String username, String name, Pageable pageable);
+
+    List<UserEntity> findAllByLastActiveBeforeAndActiveAndTotalDaysStreakNot(Timestamp date, Integer active, Integer daysStreak);
 }

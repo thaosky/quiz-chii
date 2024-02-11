@@ -30,6 +30,7 @@ public class AchievementService {
     private final AchievementConfigRepository achievementConfigRepository;
     private final UserAchievementRepository userAchievementRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     public ListResponse<UserAchievementResponse> getAchievementByUser(Integer pageSize, Integer pageNo, String sortName, String sortDir) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -45,6 +46,7 @@ public class AchievementService {
         List<UserAchievementResponse> questionResponseList = new ArrayList<>();
         UserAchievementResponse achievementDaily = new UserAchievementResponse();
         achievementDaily.setMessage(String.format(MessageCode.ACHIEVEMENT_DAILY, userEntity.getTotalDaysStreak()));
+        achievementDaily.setName(String.valueOf(userEntity.getTotalDaysStreak()));
         questionResponseList.add(achievementDaily);
 
         // Mapping

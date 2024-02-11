@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 @Service
@@ -93,5 +94,17 @@ public class UserService {
         BeanUtils.copyProperties(userEntity, response);
         response.setRole(userEntity.getRoles());
         return response;
+    }
+
+    public void getUserLazy() {
+        // Khong login pham vi 1 ngay tu thoi diem check
+        Timestamp timestamp = Util.addTime(new Timestamp(System.currentTimeMillis()), -24 * 60);
+        List<UserEntity> userEntityList = userRepository.findAllByLastActiveBeforeAndActiveAndTotalDaysStreakNot(timestamp, 1, 0);
+
+        for (UserEntity user : userEntityList) {
+            user.setTotalDaysStreak(0);
+        }
+
+        userRepository.saveAll(userEntityList);
     }
 }
