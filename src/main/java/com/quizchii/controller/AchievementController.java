@@ -20,17 +20,16 @@ public class AchievementController {
     private final AchievementService achievementService;
     private final AchievementConfigService achievementConfigService;
 
-    @GetMapping("/{userId}")
+    @GetMapping
     @PreAuthorize("hasRole('ADMIN') or  hasRole('USER')")
-    public ResponseEntity<?> getAll(@PathVariable("userId") Long userId,
-                                    @Param("pageSize") Integer pageSize,
+    public ResponseEntity<?> getAll(@Param("pageSize") Integer pageSize,
                                     @Param("pageNo") Integer pageNo,
                                     @Param("sortName") String sortName,
                                     @Param("sortDir") String sortDir
     ) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
-                        .success(achievementService.getAchievementByUserId(userId, pageSize, pageNo, sortName, sortDir)));
+                        .success(achievementService.getAchievementByUser(pageSize, pageNo, sortName, sortDir)));
     }
 
 
