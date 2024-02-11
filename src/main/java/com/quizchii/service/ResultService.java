@@ -94,7 +94,6 @@ public class ResultService {
         }
         resultDetailRepository.saveAll(resultDetailEntities);
 
-
         ResultResponse response = new ResultResponse();
 
         /*

@@ -96,7 +96,7 @@ public class UserService {
         return response;
     }
 
-    public void getUserLazy() {
+    public void resetUserLazy() {
         // Khong login pham vi 1 ngay tu thoi diem check
         Timestamp timestamp = Util.addTime(new Timestamp(System.currentTimeMillis()), -24 * 60);
         List<UserEntity> userEntityList = userRepository.findAllByLastActiveBeforeAndActiveAndTotalDaysStreakNot(timestamp, 1, 0);
