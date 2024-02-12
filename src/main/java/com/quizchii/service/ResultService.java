@@ -99,10 +99,9 @@ public class ResultService {
         /*
          * Streak
          */
-        // Streak day
-        int streakDays = calculateStreakDays(userEntity.getLastActive(), submittedAt);
         // First submit or not
         if (isFistSubmitOnDay(userEntity.getLastActive(), submittedAt)) {
+            int streakDays = userEntity.getTotalDaysStreak() + 1;
             response.setFirstSubmit(true);
             userEntity.setTotalDaysStreak(streakDays);
             response.setMessageStreak(String.format(MessageCode.ACHIEVEMENT_DAILY_CONGRA, streakDays));

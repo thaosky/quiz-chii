@@ -30,7 +30,6 @@ public class AchievementService {
     private final AchievementConfigRepository achievementConfigRepository;
     private final UserAchievementRepository userAchievementRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
 
     public ListResponse<UserAchievementResponse> getAchievementByUser(Integer pageSize, Integer pageNo, String sortName, String sortDir) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

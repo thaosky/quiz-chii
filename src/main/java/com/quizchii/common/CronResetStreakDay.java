@@ -15,7 +15,6 @@ public class CronResetStreakDay {
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void resetStreakDay() {
-        System.out.println("============ RESET =================");
         userService.resetUserLazy();
     }
 
