@@ -12,9 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 public class ExcelHelper {
@@ -30,8 +28,16 @@ public class ExcelHelper {
             "Giải thích"
     };
 
-    static String[] DROPDOWN_OPTION = {"A", "B", "C", "D"};
+    static Map<String, Integer> optionMap = new HashMap<String, Integer>() {
+        {
+            put("A", 1);
+            put("B", 2);
+            put("C", 3);
+            put("D", 4);
+        }
+    };
 
+    static String[] DROPDOWN_OPTION = {"A", "B", "C", "D"};
     static int[] widthColumns = {4, 3, 3, 3, 3, 3, 3, 3};
 
     public static boolean hasExcelFormat(MultipartFile file) {
@@ -85,7 +91,9 @@ public class ExcelHelper {
                             question.setAnswer4(currentCell.getStringCellValue());
                             break;
                         case 6:
-                            question.setCorrectAnswer((int) currentCell.getNumericCellValue());
+                            String correctAnswer = currentCell.getStringCellValue();
+                            Integer correctInt = optionMap.get(correctAnswer);
+                            question.setCorrectAnswer(correctInt);
                             break;
                         case 7:
                             question.setExplanation(currentCell.getStringCellValue());
