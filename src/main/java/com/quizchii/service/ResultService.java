@@ -101,13 +101,17 @@ public class ResultService {
          */
         // First submit or not
         if (isFistSubmitOnDay(userEntity.getLastActive(), submittedAt)) {
-            int streakDays = userEntity.getTotalDaysStreak() + 1;
+            int streakDays = userEntity.getCurrDaysStreak() + 1;
             response.setFirstSubmit(true);
-            userEntity.setTotalDaysStreak(streakDays);
-            response.setMessageStreak(String.format(MessageCode.ACHIEVEMENT_DAILY_CONGRA, streakDays));
+            userEntity.setCurrDaysStreak(streakDays);
 
-            //Check nhận achievement
-            achievementService.createAchievement(userEntity.getId(), streakDays);
+            // Set max streak days
+            if (streakDays > userEntity.getMaxDaysStreak()) {
+                userEntity.setMaxDaysStreak(streakDays);
+                //Check nhận achievement
+                achievementService.createAchievement(userEntity.getId(), streakDays);
+            }
+            response.setMessageStreak(String.format(MessageCode.ACHIEVEMENT_DAILY_CONGRA, streakDays));
         }
         userEntity.setLastActive(submittedAt);
         userRepository.save(userEntity);

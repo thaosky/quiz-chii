@@ -6,6 +6,7 @@ import com.quizchii.entity.AchievementConfigEntity;
 import com.quizchii.entity.UserAchievementEntity;
 import com.quizchii.entity.UserEntity;
 import com.quizchii.model.ListResponse;
+import com.quizchii.model.response.DailyStreakResponse;
 import com.quizchii.model.response.UserAchievementResponse;
 import com.quizchii.model.view.UserAchievementView;
 import com.quizchii.repository.AchievementConfigRepository;
@@ -44,8 +45,8 @@ public class AchievementService {
         List<UserAchievementView> list = page.toList();
         List<UserAchievementResponse> questionResponseList = new ArrayList<>();
         UserAchievementResponse achievementDaily = new UserAchievementResponse();
-        achievementDaily.setMessage(String.format(MessageCode.ACHIEVEMENT_DAILY, userEntity.getTotalDaysStreak()));
-        achievementDaily.setName(String.valueOf(userEntity.getTotalDaysStreak()));
+        achievementDaily.setMessage(String.format(MessageCode.ACHIEVEMENT_DAILY, userEntity.getCurrDaysStreak()));
+        achievementDaily.setName(String.valueOf(userEntity.getMaxDaysStreak()));
         questionResponseList.add(achievementDaily);
 
         // Mapping
@@ -80,5 +81,18 @@ public class AchievementService {
         userAchievementEntity.setUserId(userId);
         userAchievementRepository.save(userAchievementEntity);
         return true;
+    }
+
+    public DailyStreakResponse getCurrStreak() {
+        // Get curr user
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+        UserEntity userEntity = userRepository.getByUsername(username);
+
+        // Return
+        DailyStreakResponse response = new DailyStreakResponse();
+        response.setMessage(String.format(MessageCode.ACHIEVEMENT_DAILY, userEntity.getCurrDaysStreak()));
+        response.setDays(userEntity.getCurrDaysStreak());
+        return response;
     }
 }

@@ -22,61 +22,41 @@ public class AchievementController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or  hasRole('USER')")
-    public ResponseEntity<?> getAll(@Param("pageSize") Integer pageSize,
-                                    @Param("pageNo") Integer pageNo,
-                                    @Param("sortName") String sortName,
-                                    @Param("sortDir") String sortDir
-    ) {
-        return ResponseEntity.ok().body(
-                new ResponseData<>()
-                        .success(achievementService.getAchievementByUser(pageSize, pageNo, sortName, sortDir)));
+    public ResponseEntity<?> getAll(@Param("pageSize") Integer pageSize, @Param("pageNo") Integer pageNo, @Param("sortName") String sortName, @Param("sortDir") String sortDir) {
+        return ResponseEntity.ok().body(new ResponseData<>().success(achievementService.getAchievementByUser(pageSize, pageNo, sortName, sortDir)));
+    }
+
+    @GetMapping("/daily")
+    @PreAuthorize("hasRole('ADMIN') or  hasRole('USER')")
+    public ResponseEntity<?> getCurrStreak() {
+        return ResponseEntity.ok().body(new ResponseData<>().success(achievementService.getCurrStreak()));
     }
 
 
     @GetMapping("/configs")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAllAchievementConfig(
-            @Param("pageSize") Integer pageSize,
-            @Param("pageNo") Integer pageNo,
-            @Param("sortName") String sortName,
-            @Param("sortDir") String sortDir,
-            @Param("name") String name
-    ) {
-        return ResponseEntity.ok().body(
-                new ResponseData<>()
-                        .success(achievementConfigService.getAllAchievementConfig(name, pageSize, pageNo, sortName, sortDir)));
+    public ResponseEntity<?> getAllAchievementConfig(@Param("pageSize") Integer pageSize, @Param("pageNo") Integer pageNo, @Param("sortName") String sortName, @Param("sortDir") String sortDir, @Param("name") String name) {
+        return ResponseEntity.ok().body(new ResponseData<>().success(achievementConfigService.getAllAchievementConfig(name, pageSize, pageNo, sortName, sortDir)));
     }
 
     @PostMapping("/configs")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> createAchievementConfig(
-           @RequestBody AchievementConfigEntity achievementConfig
-    ) {
-        return ResponseEntity.ok().body(
-                new ResponseData<>()
-                        .success(achievementConfigService.create(achievementConfig)));
+    public ResponseEntity<?> createAchievementConfig(@RequestBody AchievementConfigEntity achievementConfig) {
+        return ResponseEntity.ok().body(new ResponseData<>().success(achievementConfigService.create(achievementConfig)));
     }
 
     @PutMapping("/configs/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateAchievementConfig(
-           @RequestBody AchievementConfigEntity achievementConfig,
-           @PathVariable Long id
-    ) {
-        return ResponseEntity.ok().body(
-                new ResponseData<>()
-                        .success(achievementConfigService.update(achievementConfig, id)));
+    public ResponseEntity<?> updateAchievementConfig(@RequestBody AchievementConfigEntity achievementConfig, @PathVariable Long id) {
+        return ResponseEntity.ok().body(new ResponseData<>().success(achievementConfigService.update(achievementConfig, id)));
     }
 
 
     @DeleteMapping("/configs/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteAchievementConfig(
-            @PathVariable Long id
-    ) {
+    public ResponseEntity<?> deleteAchievementConfig(@PathVariable Long id) {
         achievementConfigService.delete(id);
-        return new ResponseEntity<>(new ResponseData<>()
-                .success("Delete successfully!"), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(new ResponseData<>().success("Delete successfully!"), HttpStatus.NO_CONTENT);
     }
 
 }

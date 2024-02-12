@@ -43,7 +43,9 @@ public class UserEntity {
 
     private Timestamp lastActive; // Phục vụ cho achievement
 
-    private Integer totalDaysStreak; // Phục vụ cho achievement
+    private Integer currDaysStreak; // Phục vụ cho achievement
+
+    private Integer maxDaysStreak; // Phục vụ cho achievement
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
@@ -60,6 +62,7 @@ public class UserEntity {
         this.email = email;
         this.password = password;
         this.active = 1;
-        this.totalDaysStreak = 0;
+        this.currDaysStreak = 0;
+        this.maxDaysStreak = 0;
     }
 }

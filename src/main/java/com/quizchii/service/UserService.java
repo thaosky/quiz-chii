@@ -1,10 +1,9 @@
 package com.quizchii.service;
 
-import com.quizchii.Enum.SortDir;
-import com.quizchii.common.Util;
-import com.quizchii.entity.UserEntity;
 import com.quizchii.common.BusinessException;
 import com.quizchii.common.MessageCode;
+import com.quizchii.common.Util;
+import com.quizchii.entity.UserEntity;
 import com.quizchii.model.ListResponse;
 import com.quizchii.model.request.UpdateUserRequest;
 import com.quizchii.model.response.UserResponse;
@@ -12,15 +11,15 @@ import com.quizchii.repository.UserRepository;
 import com.quizchii.security.AuthService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -99,10 +98,10 @@ public class UserService {
     public void resetUserLazy() {
         // Khong login pham vi 1 ngay tu thoi diem check
         Timestamp timestamp = Util.addTime(new Timestamp(System.currentTimeMillis()), -24 * 60);
-        List<UserEntity> userEntityList = userRepository.findAllByLastActiveBeforeAndActiveAndTotalDaysStreakNot(timestamp, 1, 0);
+        List<UserEntity> userEntityList = userRepository.findAllByLastActiveBeforeAndActiveAndCurrDaysStreakNot(timestamp, 1, 0);
 
         for (UserEntity user : userEntityList) {
-            user.setTotalDaysStreak(0);
+            user.setCurrDaysStreak(0);
         }
 
         userRepository.saveAll(userEntityList);

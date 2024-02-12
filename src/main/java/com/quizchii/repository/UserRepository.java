@@ -1,6 +1,5 @@
 package com.quizchii.repository;
 
-import com.quizchii.entity.QuestionEntity;
 import com.quizchii.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,10 +17,15 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByUsername(String username);
 
     Boolean existsByUsername(String username);
+
     Boolean existsByUsernameAndActive(String username, Integer active);
+
     Boolean existsByEmail(String email);
+
     Optional<UserEntity> findByEmail(String email);
+
     UserEntity getByUsername(String username);
+
     @Query(nativeQuery = true,
             value = "select u.*\n" +
                     "from users u\n" +
@@ -34,5 +38,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     )
     Page<UserEntity> listUser(String username, String name, Pageable pageable);
 
-    List<UserEntity> findAllByLastActiveBeforeAndActiveAndTotalDaysStreakNot(Timestamp date, Integer active, Integer daysStreak);
+    List<UserEntity> findAllByLastActiveBeforeAndActiveAndCurrDaysStreakNot(Timestamp date, Integer active, Integer daysStreak);
 }
