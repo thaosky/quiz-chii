@@ -15,7 +15,7 @@ public class Util {
     static long MILLIS_PER_DAY = 1000 * 60 * 60 * 24;
     static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-    static SimpleDateFormat formatDateBeauty = new SimpleDateFormat("dd/MM/yyy HH:mm");
+    static SimpleDateFormat formatDateBeauty = new SimpleDateFormat("dd/MM/yyy HH:mm:ss");
 
     public static Timestamp convertStringToTimestamp(String strDate) {
         try {

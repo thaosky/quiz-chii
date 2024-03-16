@@ -143,8 +143,8 @@ public class ResultService {
             ListResultItemResponse item = new ListResultItemResponse();
             BeanUtils.copyProperties(entity, item);
             item.setResultId(entity.getId());
-            item.setStartedAt(entity.getStartedAt().toString());
-            item.setSubmittedAt(entity.getSubmittedAt().toString());
+            item.setStartedAt(Util.convertTimestampToString(entity.getStartedAt()));
+            item.setSubmittedAt(Util.convertTimestampToString(entity.getSubmittedAt()));
             item.setResultId(entity.getId());
             item.setTotalQuestion(entity.getTotalQuestion());
             item.setTestName(entity.getTestName());
