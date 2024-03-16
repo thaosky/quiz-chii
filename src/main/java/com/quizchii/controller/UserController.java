@@ -27,11 +27,13 @@ public class UserController {
                                     @Param("pageNo") Integer pageNo,
                                     @Param("sortName") String sortName,
                                     @Param("sortDir") String sortDir,
-                                    @Param("content") String username,
-                                    @Param("tagId") String name) {
+                                    @Param("username") String username,
+                                    @Param("name") String name,
+                                    @Param("email") String email
+                                    ) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
-                        .success(userService.getAll(pageSize, pageNo, sortName, sortDir, username, name)));
+                        .success(userService.getAll(pageSize, pageNo, sortName, sortDir, username, name, email)));
     }
 
 

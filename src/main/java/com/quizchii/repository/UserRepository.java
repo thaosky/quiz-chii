@@ -30,13 +30,15 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             value = "select u.*\n" +
                     "from users u\n" +
                     "where (u.username LIKE CONCAT('%', :username, '%') or :username is null)\n" +
-                    "  and (u.name LIKE CONCAT('%', :name, '%') or :name is null)",
-            countQuery = "select count(u.id)\n" +
-                    "from users u\n" +
-                    "where (u.username LIKE CONCAT('%', :username, '%') or :username is null)\n" +
-                    "  and (u.name LIKE CONCAT('%', :name, '%') or :name is null)"
+                    "  and (u.name LIKE CONCAT('%', :name, '%') or :name is null)" +
+                    "  and (u.email LIKE CONCAT('%', :email, '%') or :email is null)",
+            countQuery= "select count(u.id)\n" +
+            "from users u\n" +
+            "where (u.username LIKE CONCAT('%', :username, '%') or :username is null)\n" +
+            "  and (u.name LIKE CONCAT('%', :name, '%') or :name is null)" +
+            "  and (u.email LIKE CONCAT('%', :email, '%') or :email is null)"
     )
-    Page<UserEntity> listUser(String username, String name, Pageable pageable);
+    Page<UserEntity> listUser(String username, String name, String email, Pageable pageable);
 
     List<UserEntity> findAllByLastActiveBeforeAndActiveAndCurrDaysStreakNot(Timestamp date, Integer active, Integer daysStreak);
 }

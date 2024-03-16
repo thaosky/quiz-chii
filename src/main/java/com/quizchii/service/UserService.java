@@ -33,7 +33,7 @@ public class UserService {
         this.encoder = encoder;
     }
 
-    public ListResponse getAll(Integer pageSize, Integer pageNo, String sortName, String sortDir, String username, String name) {
+    public ListResponse getAll(Integer pageSize, Integer pageNo, String sortName, String sortDir, String username, String name, String email) {
 
         if ("".equals(username)) {
             username = null;
@@ -41,8 +41,11 @@ public class UserService {
         if ("".equals(name)) {
             name = null;
         }
+        if ("".equals(email)) {
+            email = null;
+        }
         Pageable pageable = Util.createPageable(pageSize, pageNo, sortName, sortDir);
-        Page<UserEntity> page = userRepository.listUser(username, name, pageable);
+        Page<UserEntity> page = userRepository.listUser(username, name, email, pageable);
 
         ListResponse<UserResponse> response = new ListResponse();
         List<UserResponse> userResponseList = new ArrayList<>();
