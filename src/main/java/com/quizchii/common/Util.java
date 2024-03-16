@@ -28,6 +28,9 @@ public class Util {
     }
 
     public static String convertTimestampToString(Timestamp timestamp) {
+        if (timestamp == null) {
+            return "";
+        }
         return formatDateBeauty.format(timestamp);
     }
 

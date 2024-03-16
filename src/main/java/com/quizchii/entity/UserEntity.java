@@ -47,6 +47,8 @@ public class UserEntity {
 
     private Integer maxDaysStreak; // Phục vụ cho achievement
 
+    private Timestamp dateGetMaxStreak; // Phục vụ cho achievement
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

@@ -46,7 +46,8 @@ public class AchievementService {
         List<UserAchievementResponse> questionResponseList = new ArrayList<>();
         UserAchievementResponse achievementDaily = new UserAchievementResponse();
         achievementDaily.setMessage(String.format(MessageCode.ACHIEVEMENT_DAILY, userEntity.getCurrDaysStreak()));
-        achievementDaily.setName(String.valueOf(userEntity.getMaxDaysStreak()));
+        achievementDaily.setName(MessageCode.ACHIEVEMENT_DAILY_CODE);
+        achievementDaily.setTimeAchieved(Util.convertTimestampToString(userEntity.getDateGetMaxStreak()));
         questionResponseList.add(achievementDaily);
 
         // Mapping

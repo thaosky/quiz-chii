@@ -98,6 +98,7 @@ public class ResultService {
 
         /*
          * Streak
+         * TODO
          */
         // First submit or not
         if (isFistSubmitOnDay(userEntity.getLastActive(), submittedAt)) {
@@ -108,6 +109,7 @@ public class ResultService {
             // Set max streak days
             if (streakDays > userEntity.getMaxDaysStreak()) {
                 userEntity.setMaxDaysStreak(streakDays);
+                userEntity.setDateGetMaxStreak(submittedAt);
                 //Check nhận achievement
                 achievementService.createAchievement(userEntity.getId(), streakDays);
             }
