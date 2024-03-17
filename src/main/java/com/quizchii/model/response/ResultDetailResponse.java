@@ -13,6 +13,8 @@ public class ResultDetailResponse {
 
     private String question;
 
+    private String explanation;
+
     private String answer1;
 
     private String answer2;
