@@ -19,10 +19,13 @@ public class ResultDetailEntity {
 
     private Long resultId;
 
+    @Column(length = 1000)
     private String question;
 
+    @Column(length = 1000)
     private String content;
 
+    @Column(length = 5000)
     private String explanation;
 
     @Column(name = "answer_1")
