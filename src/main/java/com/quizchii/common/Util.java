@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class Util {
     static long MILLIS_PER_DAY = 1000 * 60 * 60 * 24;
     static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    static SimpleDateFormat timeToTest = new SimpleDateFormat("HH:mm:ss");
     static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
     static SimpleDateFormat formatDateBeauty = new SimpleDateFormat("dd/MM/yyy HH:mm:ss");
 
@@ -46,6 +47,16 @@ public class Util {
         time2 -= time2 % MILLIS_PER_DAY;
         int res = (int) TimeUnit.DAYS.convert(time1 - time2, TimeUnit.MILLISECONDS);
         return Math.abs(res);
+    }
+
+    /**
+     * Tính thời gian giữa time 1 và time 2
+     * @param startTime thời gian bắt đầu
+     * @param endTime thời gian kết thúc
+     * @return string theo pattern HH:mm:ss
+     */
+    public static String timeBetween(Timestamp startTime, Timestamp endTime) {
+        return timeToTest.format(endTime.getTime() - startTime.getTime());
     }
 
     public static boolean isSameDay(Timestamp t1, Timestamp t2) {

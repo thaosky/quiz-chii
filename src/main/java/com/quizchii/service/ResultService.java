@@ -1,6 +1,7 @@
 package com.quizchii.service;
 
 import com.quizchii.common.BusinessException;
+import com.quizchii.common.ExcelHelper;
 import com.quizchii.common.MessageCode;
 import com.quizchii.common.Util;
 import com.quizchii.entity.*;
@@ -14,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -188,6 +190,44 @@ public class ResultService {
         response.setTestName(test.getName());
         return response;
     }
+
+    /**
+     * Download static file
+     *
+     * @param id của bài kiểm tra muốn thống kê
+     * @return
+     */
+    public ByteArrayInputStream downloadExcelStatistic(Long id) {
+        List<StatisticDTO> dtoList = new ArrayList<>();
+
+        List<ResultEntity> resultEntityList = resultRepository.getAllByTestId(id);
+        for (ResultEntity entity : resultEntityList) {
+            StatisticDTO dto = new StatisticDTO();
+
+
+            dto.setSubmittedAt(Util.convertTimestampToString(entity.getStartedAt()));
+            dto.setTimeToTest(Util.timeBetween(entity.getStartedAt(), entity.getSubmittedAt()));
+            dto.setCorrectResult(entity.getCorrected().toString() + "/" + entity.getTotalQuestion().toString());
+
+            // set point
+            // TODO
+            double x = (entity.getCorrected() * 100.0 / entity.getTotalQuestion() * 1.0);
+            double point = Math.round(x * 100) / 100;
+            dto.setPoint(String.valueOf(point));
+
+            // get username
+            UserEntity userEntity = userRepository.getById(entity.getAccountId());
+            dto.setUsername(userEntity.getUsername());
+
+            dtoList.add(dto);
+        }
+
+        // Get test by id test
+        TestEntity test = testRepository.getById(id);
+
+        return ExcelHelper.resultToExcel(dtoList, test);
+    }
+
 
     /**
      * @param id kết quả lần thi

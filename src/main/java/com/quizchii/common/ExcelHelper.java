@@ -1,7 +1,13 @@
 package com.quizchii.common;
 
 import com.quizchii.entity.QuestionEntity;
+import com.quizchii.entity.ResultEntity;
+import com.quizchii.entity.TestEntity;
+import com.quizchii.model.response.ListResultByTestIdResponse;
+import com.quizchii.model.response.ListResultItemByTestIdResponse;
+import com.quizchii.model.response.StatisticDTO;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -113,6 +119,67 @@ public class ExcelHelper {
             return questionList;
         } catch (IOException e) {
             throw new RuntimeException("Fail to parse Excel file: " + e.getMessage());
+        }
+    }
+
+    static String[] HEADERS_STATISTIC = {
+            "Username",
+            "Thời điểm nộp bài",
+            "Thời gian làm bài",
+            "Kết quả",
+            "Điểm",
+    };
+    static int[] widthColumns_statistic = {4, 4, 4, 3, 3};
+
+
+    public static ByteArrayInputStream resultToExcel(List<StatisticDTO> list, TestEntity test) {
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            XSSFSheet sheet = (XSSFSheet) workbook.createSheet(SHEET);
+
+            // Title
+            Row title = sheet.createRow(0);
+            Cell cellTitle = title.createCell(0);
+            CellStyle styleTitle = workbook.createCellStyle();
+            Font titleFont = workbook.createFont();
+            titleFont.setBold(true);
+            titleFont.setFontHeightInPoints((short) 18);
+            styleTitle.setFont(titleFont);
+            styleTitle.setAlignment(HorizontalAlignment.CENTER);
+            cellTitle.setCellStyle(styleTitle);
+            cellTitle.setCellValue(test.getName());
+            sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 4));
+
+            //Header
+            Row headerRow = sheet.createRow(3);
+            for (int col = 0; col < HEADERS_STATISTIC.length; col++) {
+                Cell cell = headerRow.createCell(col);
+                cell.setCellValue(HEADERS_STATISTIC[col]);
+                CellStyle cellStyle = workbook.createCellStyle();
+                Font boldFont = workbook.createFont();
+                boldFont.setBold(true);
+                boldFont.setFontHeightInPoints((short) 13);
+                cellStyle.setFont(boldFont);
+                cellStyle.setAlignment(HorizontalAlignment.CENTER);
+                cell.setCellStyle(cellStyle);
+                sheet.setColumnWidth(col, widthColumns_statistic[col] * 1500);
+            }
+
+            int rowIdx = 4;
+            // Duyệt qua từng dòng kết quả
+            for (StatisticDTO result : list) {
+                Row row = sheet.createRow(rowIdx++);
+
+                row.createCell(0).setCellValue(result.getUsername());
+                row.createCell(1).setCellValue(result.getSubmittedAt());
+                row.createCell(2).setCellValue(result.getTimeToTest());
+                row.createCell(3).setCellValue(result.getCorrectResult());
+                row.createCell(4).setCellValue(result.getPoint());
+            }
+
+            workbook.write(out);
+            return new ByteArrayInputStream(out.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException("fail to import data to Excel file: " + e.getMessage());
         }
     }
 
