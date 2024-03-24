@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -199,7 +200,7 @@ public class ResultService {
      */
     public ByteArrayInputStream downloadExcelStatistic(Long id) {
         List<StatisticDTO> dtoList = new ArrayList<>();
-
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
         List<ResultEntity> resultEntityList = resultRepository.getAllByTestId(id);
         for (ResultEntity entity : resultEntityList) {
             StatisticDTO dto = new StatisticDTO();
@@ -211,9 +212,9 @@ public class ResultService {
 
             // set point
             // TODO
-            double x = (entity.getCorrected() * 100.0 / entity.getTotalQuestion() * 1.0);
-            double point = Math.round(x * 100) / 100;
-            dto.setPoint(String.valueOf(point));
+            double x = (entity.getCorrected() * 100.0 / entity.getTotalQuestion());
+            double point = Double.parseDouble(decimalFormat.format(x));
+            dto.setPoint(point);
 
             // get username
             UserEntity userEntity = userRepository.getById(entity.getAccountId());

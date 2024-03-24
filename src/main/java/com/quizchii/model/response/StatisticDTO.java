@@ -14,6 +14,6 @@ public class StatisticDTO {
     private String submittedAt;
     private String timeToTest;
     private String correctResult;
-    private String point;
+    private Double point;
 
 }
