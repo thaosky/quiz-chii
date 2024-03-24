@@ -19,10 +19,10 @@ public class QuestionEntity {
     private Long id;
 
     @Column(length = 1000)
-    private String question;
+    private String content; // Điền vào chỗ ...
 
     @Column(length = 1000)
-    private String content;
+    private String question; // Dữ kiện câu hỏi
 
     @Column(length = 5000)
     private String explanation;

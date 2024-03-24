@@ -18,8 +18,8 @@ import java.util.*;
 public class ExcelHelper {
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     static String SHEET = "Sheet1";
-    static String[] HEADERS = {"Câu hỏi",
-            "Nội dung",
+    static String[] HEADERS = {"Nội dung câu hỏi",
+            "Dữ kiện câu hỏi",
             "Phương án A",
             "Phương án B",
             "Phương án C",
@@ -73,10 +73,10 @@ public class ExcelHelper {
 
                     switch (cellIdx) {
                         case 0:
-                            question.setQuestion(currentCell.getStringCellValue());
+                            question.setContent(currentCell.getStringCellValue());
                             break;
                         case 1:
-                            question.setContent(currentCell.getStringCellValue());
+                            question.setQuestion(currentCell.getStringCellValue());
                             break;
                         case 2:
                             question.setAnswer1(currentCell.getStringCellValue());
