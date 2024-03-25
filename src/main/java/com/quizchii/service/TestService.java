@@ -16,6 +16,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -34,6 +36,7 @@ public class TestService {
     private QuestionRepository questionRepository;
     private ResultRepository resultRepository;
     private AuthService authService;
+    private UserRepository userRepository;
 
     public ListResponse<TestResponse> getAllTest(Integer pageSize,
                                                  Integer pageNo,
@@ -103,7 +106,10 @@ public class TestService {
 
         // Get test
         TestEntity testEntity = testRepository.findById(testId).get();
-        canAccessTest(testEntity, userId);
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+        UserEntity userEntity = userRepository.getByUsername(username);
+        canAccessTest(testEntity, userEntity.getId());
         TestResponse dto = new TestResponse();
         BeanUtils.copyProperties(testEntity, dto);
         if (TestType.ONCE_WITH_TIME.equals(testEntity.getTestType())) {
