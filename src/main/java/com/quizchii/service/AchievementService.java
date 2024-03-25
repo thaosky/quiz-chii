@@ -54,6 +54,7 @@ public class AchievementService {
         for (UserAchievementView view : list) {
             UserAchievementResponse userAchievementResponse = new UserAchievementResponse();
             BeanUtils.copyProperties(view, userAchievementResponse);
+            userAchievementResponse.setTimeAchieved(Util.convertTimestampToString(view.getTimeAchieved()));
             questionResponseList.add(userAchievementResponse);
         }
 
