@@ -13,7 +13,7 @@ public interface TestRepository extends JpaRepository<TestEntity, Long> {
     @Query(nativeQuery = true,
             value = "select q.id, q.name, q.test_type as testType, q.available_time as availableTime" +
                     ", q.start_time as startTime, q.end_time as endTime, q.description" +
-                    ", count(r.id) as totalSubmit, ROUND(SUM(r.corrected / r.total_question *100)/ count(r.id), 2) as averagePoint " +
+                    ", count(distinct r.id) as totalSubmit, ROUND(SUM(r.corrected / r.total_question *100)/ count(r.id), 2) as averagePoint " +
                     "from test q\n" +
                     "                  left join test_tag qt on qt.test_id = q.id\n" +
                     "                  left join tag t on t.id = qt.tag_id\n" +
