@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ResultRepository extends JpaRepository<ResultEntity, Long> {
-    List<ResultEntity> getAllByAccountId(Long id);
+    List<ResultEntity> getAllByAccountIdOrderByIdDesc(Long id);
     List<ResultEntity> getAllByTestId(Long id);
     List<ResultEntity> getAllByTestIdAndAccountId(Long testId, Long userId);
 }

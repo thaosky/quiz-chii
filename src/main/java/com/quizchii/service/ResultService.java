@@ -145,7 +145,7 @@ public class ResultService {
         }
 
         List<ListResultItemResponse> list = new ArrayList<>();
-        List<ResultEntity> resultEntityList = resultRepository.getAllByAccountId(id);
+        List<ResultEntity> resultEntityList = resultRepository.getAllByAccountIdOrderByIdDesc(id);
         for (ResultEntity entity : resultEntityList) {
             ListResultItemResponse item = new ListResultItemResponse();
             BeanUtils.copyProperties(entity, item);
