@@ -27,11 +27,12 @@ public class TestController {
                                         @Param("sortDir") String sortDir,
                                         @Param("name") String name,
                                         @Param("tagId") Long tagId,
-                                        @Param("testType") TestType testType
+                                        @Param("testType") TestType testType,
+                                        @Param("username") String username
     ) {
         return ResponseEntity.ok().body(
                 new ResponseData<>()
-                        .success(testService.getAllTest(pageSize, pageNo, sortName, sortDir, name, tagId, testType)));
+                        .success(testService.getAllTest(pageSize, pageNo, sortName, sortDir, name, tagId, testType, username)));
     }
 
     // Lấy bài thi cho Admin (Bao gồm cả câu trả lời)

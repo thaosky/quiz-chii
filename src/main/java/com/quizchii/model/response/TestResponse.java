@@ -31,4 +31,7 @@ public class TestResponse {
 
     private Float averagePoint;
     private Integer totalSubmit;
+
+    private Integer countSubmitByUser;
+    private Float averagePointByUser;
 }

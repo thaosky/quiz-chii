@@ -1,12 +1,15 @@
 package com.quizchii.repository;
 
 import com.quizchii.entity.TestEntity;
+import com.quizchii.model.view.TestByUserView;
 import com.quizchii.model.view.TestResponseView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface TestRepository extends JpaRepository<TestEntity, Long> {
@@ -44,4 +47,14 @@ public interface TestRepository extends JpaRepository<TestEntity, Long> {
                     "group by q.id"
     )
     Page<TestResponseView> listTest(String name, Long tagId, String testType, Pageable pageable);
+
+
+    @Query(nativeQuery = true, value = "select r.test_id as testId, count(r.id) as countSubmitByUser\n" +
+            "     , avg(r.corrected / r.total_question) * 100 as avgByUser\n" +
+            "from users u\n" +
+            "         left join result r on r.account_id = u.id\n" +
+            "where u.username = :username \n" +
+            "group by r.test_id")
+    List<TestByUserView> getTestByUser(String username);
+
 }

@@ -8,10 +8,13 @@ import com.quizchii.common.Util;
 import com.quizchii.entity.*;
 import com.quizchii.model.ListResponse;
 import com.quizchii.model.response.TestResponse;
+import com.quizchii.model.view.TestByUserView;
 import com.quizchii.model.view.TestResponseView;
 import com.quizchii.repository.*;
 import com.quizchii.security.AuthService;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,10 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -44,7 +44,20 @@ public class TestService {
                                                  String sortDir,
                                                  String name,
                                                  Long tagId,
-                                                 TestType testType) {
+                                                 TestType testType,
+                                                 String username) {
+
+        // By user
+        Map<Long, Temp>  mapTest = new HashMap<>();
+        if (username != null) {
+            List<TestByUserView> testByUserViews = testRepository.getTestByUser(username);
+            for(TestByUserView view: testByUserViews) {
+                mapTest.put(view.getTestId(), new Temp(view.getCountSubmitByUser(), view.getAvgByUser()));
+            }
+        }
+
+        // Done Create map by user
+
         // Paging & sorting
         if ("".equals(name)) {
             name = null;
@@ -68,6 +81,15 @@ public class TestService {
                 item.setEndTime(Util.convertTimestampToString(entity.getEndTime()));
             }
             item.setTagList(tagEntityList);
+
+            // by user
+            if (username != null && mapTest.containsKey(entity.getId())) {
+                item.setCountSubmitByUser(mapTest.get(entity.getId()).getCountSubmitByUser());
+                item.setAveragePointByUser(mapTest.get(entity.getId()).getAveragePointByUser());
+            } else {
+                item.setCountSubmitByUser(0);
+                item.setAveragePointByUser(0.00f);
+            }
             testResponseList.add(item);
         }
         response.setItems(testResponseList);
@@ -76,7 +98,17 @@ public class TestService {
         response.setTotalElements((int) page.getTotalElements());
         response.setTotalPage(page.getTotalPages());
 
+
         return response;
+    }
+
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    private class Temp {
+        private Integer countSubmitByUser;
+        private Float averagePointByUser;
     }
 
     public TestResponse viewTest(Long testId) {
