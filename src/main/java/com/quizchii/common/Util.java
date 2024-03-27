@@ -41,6 +41,12 @@ public class Util {
         return newTime;
     }
 
+    public static Timestamp minusTime(Timestamp currTime, int second) {
+        long duration = (long) second * 1000;
+        return new Timestamp(currTime.getTime() - duration);
+    }
+
+
     public static int daysBetween(long time1, long time2) {
         // Set both times to 0:00:00
         time1 -= time1 % MILLIS_PER_DAY;
@@ -51,8 +57,9 @@ public class Util {
 
     /**
      * Tính thời gian giữa time 1 và time 2
+     *
      * @param startTime thời gian bắt đầu
-     * @param endTime thời gian kết thúc
+     * @param endTime   thời gian kết thúc
      * @return string theo pattern HH:mm:ss
      */
     public static String timeBetween(Timestamp startTime, Timestamp endTime) {

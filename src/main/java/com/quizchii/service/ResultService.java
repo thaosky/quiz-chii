@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +36,7 @@ public class ResultService {
     private final AchievementService achievementService;
 
     public ResultResponse submitTest(ResultRequest request) {
+        Timestamp now = new Timestamp(new Date().getTime());
 
         Optional<TestEntity> optionalTest = testRepository.findById(request.getTestId());
         TestEntity test = optionalTest.orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.TEST_NOT_FOUND));
@@ -74,12 +76,14 @@ public class ResultService {
 
         // Lưu kết quả thi (Ngày, giờ, điểm)
         ResultEntity resultEntity = new ResultEntity();
-        Timestamp statedAt = Util.convertStringToTimestamp(request.getStartedAt());
+
+        //TODO
+        Timestamp statedAt = Util.minusTime(now, request.getTimeToTest());
         resultEntity.setStartedAt(statedAt);
         resultEntity.setTestName(request.getTestName());
         resultEntity.setTotalQuestion(questionList.size());
-        Timestamp submittedAt = Util.convertStringToTimestamp(request.getSubmittedAt());
-        resultEntity.setSubmittedAt(submittedAt);
+
+        resultEntity.setSubmittedAt(now);
         resultEntity.setAccountId(request.getUserId());
 
 
@@ -104,7 +108,7 @@ public class ResultService {
          * TODO
          */
         // First submit or not
-        if (isFistSubmitOnDay(userEntity.getLastActive(), submittedAt)) {
+        if (isFistSubmitOnDay(userEntity.getLastActive(), now)) {
             int streakDays = userEntity.getCurrDaysStreak() + 1;
             response.setFirstSubmit(true);
             userEntity.setCurrDaysStreak(streakDays);
@@ -112,13 +116,13 @@ public class ResultService {
             // Set max streak days
             if (streakDays > userEntity.getMaxDaysStreak()) {
                 userEntity.setMaxDaysStreak(streakDays);
-                userEntity.setDateGetMaxStreak(submittedAt);
+                userEntity.setDateGetMaxStreak(now);
                 //Check nhận achievement
                 achievementService.createAchievement(userEntity.getId(), streakDays);
             }
             response.setMessageStreak(String.format(MessageCode.ACHIEVEMENT_DAILY_CONGRA, streakDays));
         }
-        userEntity.setLastActive(submittedAt);
+        userEntity.setLastActive(now);
         userRepository.save(userEntity);
 
         // Trả lại kết quả
