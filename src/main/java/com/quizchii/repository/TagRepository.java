@@ -31,7 +31,7 @@ public interface TagRepository extends JpaRepository<TagEntity, Long> {
     @Query(value = "select distinct t2.*\n" +
             "from test t\n" +
             "         left join test_question tq on t.id = tq.test_id\n" +
-            "         left join question_tag qt on qt.question_id = qt.question_id\n" +
+            "         left join question_tag qt on qt.question_id = tq.question_id\n" +
             "         left join tag t2 on qt.tag_id = t2.id\n" +
             "where t.id = :testId\n" +
             "order by t2.id",
