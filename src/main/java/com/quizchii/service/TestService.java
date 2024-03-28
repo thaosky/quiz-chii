@@ -32,7 +32,7 @@ public class TestService {
     private TestRepository testRepository;
     private TagRepository tagRepository;
     private TestQuestionRepository testQuestionRepository;
-    private TestTagRepository testTagRepository;
+    //    private TestTagRepository testTagRepository;
     private QuestionRepository questionRepository;
     private ResultRepository resultRepository;
     private AuthService authService;
@@ -88,7 +88,7 @@ public class TestService {
         // Get list question
         List<QuestionEntity> questionListForAdmin = questionRepository.findAllByTestId(testId);
         List<QuestionEntity> questionListForUser = new ArrayList<>();
-        for(QuestionEntity question: questionListForAdmin) {
+        for (QuestionEntity question : questionListForAdmin) {
             QuestionEntity doneItem = new QuestionEntity();
             BeanUtils.copyProperties(question, doneItem, "correctAnswer");
             questionListForUser.add(doneItem);
@@ -123,7 +123,7 @@ public class TestService {
         boolean isAdmin = authService.isAdmin();
         if (!isAdmin) {
             List<QuestionEntity> questionListForUser = new ArrayList<>();
-            for(QuestionEntity question: questionListForAdmin) {
+            for (QuestionEntity question : questionListForAdmin) {
                 QuestionEntity doneItem = new QuestionEntity();
                 BeanUtils.copyProperties(question, doneItem, "correctAnswer");
                 questionListForUser.add(doneItem);
@@ -147,7 +147,7 @@ public class TestService {
                 }
             }
 
-            List <ResultEntity> resultEntities = resultRepository.getAllByTestIdAndAccountId(test.getId(), userId);
+            List<ResultEntity> resultEntities = resultRepository.getAllByTestIdAndAccountId(test.getId(), userId);
             if (!resultEntities.isEmpty()) {
                 throw new BusinessException(HttpStatus.BAD_REQUEST, MessageCode.TEST_EXCEED_ONCE);
             }
@@ -177,13 +177,13 @@ public class TestService {
         }
 
         // save test_tag
-        for (TagEntity tag : tagEntityList) {
-            TestTagEntity testTagEntity = new TestTagEntity();
-            testTagEntity.setTestId(save.getId());
-            testTagEntity.setTagId(tag.getId());
-
-            testTagRepository.save(testTagEntity);
-        }
+//        for (TagEntity tag : tagEntityList) {
+//            TestTagEntity testTagEntity = new TestTagEntity();
+//            testTagEntity.setTestId(save.getId());
+//            testTagEntity.setTagId(tag.getId());
+//
+//            testTagRepository.save(testTagEntity);
+//        }
 
         testResponse.setId(save.getId());
         return testResponse;
@@ -202,8 +202,8 @@ public class TestService {
         testRepository.save(testEntity);
 
         // xoa tag
-        List<TestTagEntity> list = testTagRepository.findAllByTestId(id);
-        testTagRepository.deleteAll(list);
+//        List<TestTagEntity> list = testTagRepository.findAllByTestId(id);
+//        testTagRepository.deleteAll(list);
 
         // xoa cau hoi
         List<TestQuestionEntity> list1 = testQuestionRepository.findAllByTestId(id);
@@ -221,13 +221,13 @@ public class TestService {
         }
 
         // save test_tag
-        for (TagEntity tag : tagEntityList) {
-            TestTagEntity testTagEntity = new TestTagEntity();
-            testTagEntity.setTestId(testEntity.getId());
-            testTagEntity.setTagId(tag.getId());
-
-            testTagRepository.save(testTagEntity);
-        }
+//        for (TagEntity tag : tagEntityList) {
+//            TestTagEntity testTagEntity = new TestTagEntity();
+//            testTagEntity.setTestId(testEntity.getId());
+//            testTagEntity.setTagId(tag.getId());
+//
+//            testTagRepository.save(testTagEntity);
+//        }
 
         return request;
     }
@@ -238,8 +238,8 @@ public class TestService {
         testRepository.delete(testEntity);
 
         // xoa tag
-        List<TestTagEntity> list = testTagRepository.findAllByTestId(id);
-        testTagRepository.deleteAll(list);
+//        List<TestTagEntity> list = testTagRepository.findAllByTestId(id);
+//        testTagRepository.deleteAll(list);
 
         // xoa cau hoi
         List<TestQuestionEntity> list1 = testQuestionRepository.findAllByTestId(id);
@@ -247,14 +247,14 @@ public class TestService {
     }
 
     public void deleteIds(List<Long> ids) {
-        for (Long id: ids) {
+        for (Long id : ids) {
             Optional<TestEntity> optional = testRepository.findById(id);
             TestEntity testEntity = optional.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, MessageCode.TAG_NOT_FOUND));
             testRepository.delete(testEntity);
 
             // xoa tag
-            List<TestTagEntity> list = testTagRepository.findAllByTestId(id);
-            testTagRepository.deleteAll(list);
+//            List<TestTagEntity> list = testTagRepository.findAllByTestId(id);
+//            testTagRepository.deleteAll(list);
 
             // xoa cau hoi
             List<TestQuestionEntity> list1 = testQuestionRepository.findAllByTestId(id);
