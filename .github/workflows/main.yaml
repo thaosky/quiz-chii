@@ -55,5 +55,5 @@ jobs:
            sudo docker stop quizchi-app || true
            sudo docker rm quizchi-app || true
            sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME}}/spring-boot-quizchii:latest
-           sudo docker run -d --name quizchi-app -p 80:8080 ${{ secrets.DOCKER_HUB_USERNAME}}/spring-boot-quizchii
+           sudo docker run -d --name quizchi-app -p 8080:8080 ${{ secrets.DOCKER_HUB_USERNAME}}/spring-boot-quizchii
             
